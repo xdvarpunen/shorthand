@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shorthand_app/base_paint.dart';
+import 'package:shorthand_app/canvas_paint_type_4.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   // Track the selected paint (base class extended by other paints)
-  BasePaint? selectedPaint;
+  Widget? selectedPaint;
 
   @override
   void initState() {
@@ -102,6 +104,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.pop(context);
                 },
               ),
+              ListTile(
+                title: const Text('Paint Type 4'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = CanvasPaintType4(); // Set to PaintType3
+                  });
+                  Navigator.pop(context);
+                },
+              ),
             ],
           ),
           actions: [
@@ -119,23 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-// Base class for all paint types
-abstract class BasePaint extends StatelessWidget {
-  final Color backgroundColor;
-
-  const BasePaint({super.key, required this.backgroundColor});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: backgroundColor, // Set the background color
-      child: Center(
-        child: CanvasApp(),
-      ),
-    );
-  }
-}
-
 // Three different paint types, extending BasePaint
 
 class PaintType1 extends BasePaint {
@@ -148,62 +142,4 @@ class PaintType2 extends BasePaint {
 
 class PaintType3 extends BasePaint {
   const PaintType3({super.key}) : super(backgroundColor: Colors.orange); // Example background color
-}
-
-class CanvasApp extends StatefulWidget {
-  const CanvasApp({super.key});
-
-  @override
-  _CanvasAppState createState() => _CanvasAppState();
-}
-
-class _CanvasAppState extends State<CanvasApp> {
-  List<Offset?> points = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanUpdate: (details) {
-        setState(() {
-          points.add(details.localPosition);
-        });
-      },
-      onPanEnd: (details) {
-        points.add(null); // Adds a separator between strokes
-      },
-      child: CustomPaint(
-        size: Size.infinite,
-        painter: CanvasPainter(points),
-      ),
-    );
-  }
-}
-
-class CanvasPainter extends CustomPainter {
-  final List<Offset?> points;
-
-  CanvasPainter(this.points);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-
-    // Draw the points on the canvas (the actual drawing)
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i]!, points[i + 1]!, paint);
-      } else if (points[i] != null && points[i + 1] == null) {
-        // Draw point
-        canvas.drawCircle(points[i]!, 5.0, paint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
 }
