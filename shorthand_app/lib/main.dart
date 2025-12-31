@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shorthand_app/base_paint.dart';
 import 'package:shorthand_app/canvas_paint_type_4.dart';
+import 'package:shorthand_app/canvas_paint_type_5.dart';
 
 void main() {
   runApp(const MyApp());
@@ -108,7 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: const Text('Paint Type 4'),
                 onTap: () {
                   setState(() {
-                    selectedPaint = CanvasPaintType4(); // Set to PaintType3
+                    selectedPaint = CanvasPaintType4(); // Set to CanvasPaintType4
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Paint Type 5'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = CanvasPaintType5(); // Set to CanvasPaintType5
                   });
                   Navigator.pop(context);
                 },
