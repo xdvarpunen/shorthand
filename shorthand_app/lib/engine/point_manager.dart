@@ -1,13 +1,13 @@
-import 'package:shorthand_app/line.dart';
-import 'package:shorthand_app/point.dart';
+
+import 'package:shorthand_app/engine/line.dart';
+import 'package:shorthand_app/engine/point.dart';
 
 class PointsManager {
   final List<Line> _lines = [];
   int _nextLineId = 1;
 
   Line startLine(Point point) {
-    final line = Line(id: _nextLineId++);
-    line.addPoint(point);
+    final line = Line(id: _nextLineId++, points: [point]);
     _lines.add(line);
     return line;
   }

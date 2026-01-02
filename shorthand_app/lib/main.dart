@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shorthand_app/base_paint.dart';
-import 'package:shorthand_app/canvas_paint_type_4.dart';
-import 'package:shorthand_app/canvas_paint_type_5.dart';
+import 'package:shorthand_app/canvas/canvas.dart';
+import 'package:shorthand_app/processors/morse_code_processor_service.dart';
+import 'package:shorthand_app/processors/tally_marks_five_processor_service.dart';
+import 'package:shorthand_app/processors/tally_marks_four_processor_service.dart';
+import 'package:shorthand_app/processors/tally_marks_one_processor_service.dart';
+import 'package:shorthand_app/processors/tally_marks_three_processor_service.dart';
+import 'package:shorthand_app/processors/tally_marks_two_processor_service.dart';
+import 'package:shorthand_app/processors/tomtom_code_processor_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,9 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Paint Canvas with Popup and Background Color',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const MyHomePage(),
     );
   }
@@ -36,15 +39,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    selectedPaint = PaintType1(); // Set the default paint
+    selectedPaint = PaintTypeNoProcessor(backgroundColor: Colors.yellow);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Paint Canvas with Popup'),
-      ),
+      appBar: AppBar(title: const Text('Paint Canvas with Popup')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -59,9 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // Add space between the canvas and the button
             const SizedBox(height: 20), // Adds space between canvas and button
             // Paint Canvas
-            Expanded(
-              child: selectedPaint!,
-            ),
+            Expanded(child: selectedPaint!),
           ],
         ),
       ),
@@ -79,46 +78,136 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Paint Type 1'),
+                title: const Text('Test 1'),
                 onTap: () {
                   setState(() {
-                    selectedPaint = PaintType1(); // Set to PaintType1
+                    selectedPaint = PaintTypeNoProcessor(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.yellow,
+                    );
                   });
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: const Text('Paint Type 2'),
+                title: const Text('Test 2'),
                 onTap: () {
                   setState(() {
-                    selectedPaint = PaintType2(); // Set to PaintType2
+                    selectedPaint = PaintTypeNoProcessor(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.green,
+                    );
                   });
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: const Text('Paint Type 3'),
+                title: const Text('Test 3'),
                 onTap: () {
                   setState(() {
-                    selectedPaint = PaintType3(); // Set to PaintType3
+                    selectedPaint = PaintTypeNoProcessor(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.orange,
+                    );
                   });
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: const Text('Paint Type 4'),
+                title: const Text('Tomtom Code'),
                 onTap: () {
                   setState(() {
-                    selectedPaint = CanvasPaintType4(); // Set to CanvasPaintType4
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: TomtomCodeProcessorService(),
+                      showSinglePointCircle: false,
+                    );
                   });
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: const Text('Paint Type 5'),
+                title: const Text('Morse Code'),
                 onTap: () {
                   setState(() {
-                    selectedPaint = CanvasPaintType5(); // Set to CanvasPaintType5
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: MorseCodeProcessorService(),
+                      showSinglePointCircle: true,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Tally Marks One'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: TallyMarksOneProcessorService(),
+                      showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              
+              ListTile(
+                title: const Text('Tally Marks Two'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: TallyMarksTwoProcessorService(),
+                      showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Tally Marks Three'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: TallyMarksThreeProcessorService(),
+                      showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Tally Marks Four'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: TallyMarksFourProcessorService(),
+                      showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Tally Marks Five'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: TallyMarksFiveProcessorService(),
+                      showSinglePointCircle: false,
+                    );
                   });
                   Navigator.pop(context);
                 },
@@ -138,18 +227,4 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
-}
-
-// Three different paint types, extending BasePaint
-
-class PaintType1 extends BasePaint {
-  const PaintType1({super.key}) : super(backgroundColor: Colors.yellow); // Example background color
-}
-
-class PaintType2 extends BasePaint {
-  const PaintType2({super.key}) : super(backgroundColor: Colors.green); // Example background color
-}
-
-class PaintType3 extends BasePaint {
-  const PaintType3({super.key}) : super(backgroundColor: Colors.orange); // Example background color
 }

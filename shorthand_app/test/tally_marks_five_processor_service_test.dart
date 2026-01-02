@@ -1,50 +1,38 @@
 import 'package:flutter_test/flutter_test.dart';
-
-// Your service class and the PointsManager class
-class TallyMarksFiveProcessorService {
-  String getOutput(PointsManager pointsManager) {
-    return 'Count: ${pointsManager.totalLinesWithMoreThanOne()}';
-  }
-}
-
-class PointsManager {
-  final List<List<int>> points;
-
-  PointsManager(this.points);
-
-  // Method to count lines with more than one point
-  int totalLinesWithMoreThanOne() {
-    return points.where((line) => line.length > 1).toList().length;
-  }
-}
+import 'package:shorthand_app/engine/point.dart';
+import 'package:shorthand_app/engine/point_manager.dart';
+import 'package:shorthand_app/processors/tally_marks_five_processor_service.dart';
 
 void main() {
   group('TallyMarksFiveProcessorService', () {
     test('getOutput should return the correct count', () {
-      // Create an instance of PointsManager with test data
-      final pointsManager = PointsManager([
-        [1, 2], // Line with two points
-        [1],    // Line with one point
-        [2, 3], // Line with two points
-        [4]     // Line with one point
-      ]);
+      final pointsManager = PointsManager();
+
+      // Line with more than one point
+      final line1 = pointsManager.startLine(Point(0, 0));
+      pointsManager.addPoint(line1, Point(1, 1));
+
+      // Another line with more than one point
+      final line2 = pointsManager.startLine(Point(2, 2));
+      pointsManager.addPoint(line2, Point(3, 3));
+
+      // Line with only one point
+      pointsManager.startLine(Point(4, 4));
 
       final processor = TallyMarksFiveProcessorService();
 
-      // Call getOutput and check if it matches the expected output
       expect(processor.getOutput(pointsManager), 'Count: 2');
     });
 
     test('getOutput should return 0 when no lines with more than one point', () {
-      final pointsManager = PointsManager([
-        [1], // Line with one point
-        [2], // Line with one point
-        [3], // Line with one point
-      ]);
+      final pointsManager = PointsManager();
+
+      // Lines with only one point each
+      pointsManager.startLine(Point(0, 0));
+      pointsManager.startLine(Point(1, 1));
 
       final processor = TallyMarksFiveProcessorService();
 
-      // Test for 0 lines with more than one point
       expect(processor.getOutput(pointsManager), 'Count: 0');
     });
   });

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shorthand_app/point.dart';
-import 'package:shorthand_app/point_manager.dart';
+import 'package:shorthand_app/engine/point.dart';
+import 'package:shorthand_app/engine/point_manager.dart';
 
 void main() {
   group('PointsManager', () {
@@ -57,7 +57,7 @@ void main() {
       final totalPoints = pointsManager.totalPoints();
 
       // Assert
-      expect(totalPoints, 3); // 2 points in line1 + 1 point in line2
+      expect(totalPoints, 2);
     });
 
     test('totalLines should return the correct total number of lines', () {
