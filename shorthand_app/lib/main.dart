@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shorthand_app/canvas/canvas.dart';
+import 'package:shorthand_app/new/elder_furthak_processor.dart';
 import 'package:shorthand_app/processors/morse_code_processor_service.dart';
 import 'package:shorthand_app/processors/tally_marks_five_processor_service.dart';
 import 'package:shorthand_app/processors/tally_marks_four_processor_service.dart';
@@ -206,6 +207,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       key: UniqueKey(),
                       backgroundColor: Colors.grey,
                       processor: TallyMarksFiveProcessorService(),
+                      showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Elder Furthak'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: ElderFurthakProcessor(),
                       showSinglePointCircle: false,
                     );
                   });
