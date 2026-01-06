@@ -1,5 +1,4 @@
 import 'package:shorthand_app/canvas/canvas.dart';
-import 'package:shorthand_app/engine/group_intersecting_lines.dart';
 import 'package:shorthand_app/engine/point.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
 import 'package:shorthand_app/new/bounding_box_grouper.dart';

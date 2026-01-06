@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shorthand_app/canvas/canvas.dart';
 import 'package:shorthand_app/new/elder_furthak_processor.dart';
+import 'package:shorthand_app/new/kahakalamahou_processor.dart';
+import 'package:shorthand_app/new/lao_maori_processor.dart';
+import 'package:shorthand_app/new/pigpen_cipher_processor.dart';
 import 'package:shorthand_app/processors/morse_code_processor_service.dart';
 import 'package:shorthand_app/processors/tally_marks_five_processor_service.dart';
 import 'package:shorthand_app/processors/tally_marks_four_processor_service.dart';
@@ -222,6 +225,48 @@ class _MyHomePageState extends State<MyHomePage> {
                       backgroundColor: Colors.grey,
                       processor: ElderFurthakProcessor(),
                       showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Ka Hakalama Hou'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: KahakalamahouProcessor(),
+                      showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Lao Maori'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: LaoMaoriProcessor(),
+                      showSinglePointCircle: false,
+                    );
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Pigpen Cipher'),
+                onTap: () {
+                  setState(() {
+                    selectedPaint = BasePaintCanvas(
+                      key: UniqueKey(),
+                      backgroundColor: Colors.grey,
+                      processor: PigpenCipherProcessor(),
+                      showSinglePointCircle: true,
                     );
                   });
                   Navigator.pop(context);
