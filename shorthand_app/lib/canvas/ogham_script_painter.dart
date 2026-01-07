@@ -1,70 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:shorthand_app/canvas/canvas_processor.dart';
 import 'package:shorthand_app/engine/line.dart';
 import 'package:shorthand_app/engine/point.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
 
-abstract class CanvasProcessor {
-  String getOutput(PointsManager pointsManager);
-}
-
-class PaintTypeNoProcessor extends StatelessWidget {
-  final Color backgroundColor;
-
-  const PaintTypeNoProcessor({super.key, this.backgroundColor = Colors.grey});
-
-  @override
-  Widget build(BuildContext context) {
-    return BasePaintCanvas(
-      backgroundColor: backgroundColor,
-      processor: null,
-      showSinglePointCircle: false,
-    );
-  }
-}
-
-class BasePaintCanvas extends StatefulWidget {
+class OghamScriptPaintCanvas extends StatefulWidget {
   final Color backgroundColor;
   final CanvasProcessor? processor;
   final bool showSinglePointCircle;
+  final PointsManager pointsManager;
+  final double locationOfLine;
+  final double thicknessOfLine;
 
-  const BasePaintCanvas({
+  const OghamScriptPaintCanvas({
     super.key,
     required this.backgroundColor,
     this.processor,
     this.showSinglePointCircle = false,
+    required this.pointsManager,
+    this.locationOfLine = 100,
+    this.thicknessOfLine = 16,
   });
 
   @override
-  BasePaintCanvasState createState() => BasePaintCanvasState();
+  OghamScriptPaintCanvasState createState() => OghamScriptPaintCanvasState();
 }
 
-class BasePaintCanvasState extends State<BasePaintCanvas> {
-  late final PointsManager _pointsManager;
+class OghamScriptPaintCanvasState extends State<OghamScriptPaintCanvas> {
   Line? _currentLine;
 
   @override
   void initState() {
     super.initState();
-    _pointsManager = PointsManager();
   }
 
   void _startDrawing(Offset pos) {
     setState(() {
-      _currentLine = _pointsManager.startLine(Point(pos.dx, pos.dy));
+      _currentLine = widget.pointsManager.startLine(Point(pos.dx, pos.dy));
     });
   }
 
   void _draw(Offset pos) {
     if (_currentLine == null) return;
     setState(() {
-      _pointsManager.addPoint(_currentLine!, Point(pos.dx, pos.dy));
+      widget.pointsManager.addPoint(_currentLine!, Point(pos.dx, pos.dy));
     });
   }
 
   void _stopDrawing() => setState(() => _currentLine = null);
-
-  // ignore: unused_element
-  void _resetCanvas() => setState(() => _pointsManager.reset());
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +58,12 @@ class BasePaintCanvasState extends State<BasePaintCanvas> {
         onPanUpdate: (details) => _draw(details.localPosition),
         onPanEnd: (_) => _stopDrawing(),
         child: CustomPaint(
-          painter: _CanvasPainter(
-            pointsManager: _pointsManager,
+          painter: OghamScriptPainter(
+            pointsManager: widget.pointsManager,
             processor: widget.processor,
             showSinglePointCircle: widget.showSinglePointCircle,
+            locationOfLine: widget.locationOfLine,
+            thicknessOfLine: widget.thicknessOfLine
           ),
           size: Size.infinite,
         ),
@@ -87,15 +72,19 @@ class BasePaintCanvasState extends State<BasePaintCanvas> {
   }
 }
 
-class _CanvasPainter extends CustomPainter {
+class OghamScriptPainter extends CustomPainter {
   final PointsManager pointsManager;
   final CanvasProcessor? processor;
   final bool showSinglePointCircle;
+  final double locationOfLine;
+  final double thicknessOfLine;
 
-  _CanvasPainter({
+  OghamScriptPainter({
     required this.pointsManager,
     required this.processor,
     required this.showSinglePointCircle,
+    required this.locationOfLine,
+    required this.thicknessOfLine,
   });
 
   @override
@@ -105,7 +94,26 @@ class _CanvasPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
 
-    // Draw all lines
+    // 1. Draw background line
+    _drawBackgroundLine(canvas, size);
+
+    // 2. Draw all lines from PointsManager
+    _drawLines(canvas, size, paint);
+
+    // 3. Draw processor output text
+    _drawProcessorText(canvas, size);
+  }
+
+  // 1. Background line painting
+  void _drawBackgroundLine(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.blueGrey
+      ..strokeWidth = thicknessOfLine;
+    canvas.drawLine(Offset(0, locationOfLine), Offset(size.width, locationOfLine), paint);
+  }
+
+  // 2. Draw lines from PointsManager
+  void _drawLines(Canvas canvas, Size size, Paint paint) {
     for (final line in pointsManager.lines) {
       if (line.points.length == 1) {
         final p1 = line.points[0];
@@ -118,8 +126,10 @@ class _CanvasPainter extends CustomPainter {
         }
       }
     }
+  }
 
-    // Draw processor output text
+  // 3. Draw the processor's output text
+  void _drawProcessorText(Canvas canvas, Size size) {
     final outputText = processor?.getOutput(pointsManager);
     final textStyle = TextStyle(color: Colors.black, fontSize: 20);
     final textPainter = TextPainter(

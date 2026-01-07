@@ -1,6 +1,4 @@
-
-
-import 'package:shorthand_app/canvas/canvas.dart';
+import 'package:shorthand_app/canvas/canvas_processor.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
 
 class TallyMarksFiveProcessorService extends CanvasProcessor {

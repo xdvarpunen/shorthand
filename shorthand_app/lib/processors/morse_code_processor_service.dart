@@ -1,4 +1,4 @@
-import 'package:shorthand_app/canvas/canvas.dart';
+import 'package:shorthand_app/canvas/canvas_processor.dart';
 import 'package:shorthand_app/encoderdecoder/morse_code_decoder.dart';
 import 'package:shorthand_app/engine/line_util.dart';
 import 'package:shorthand_app/engine/point.dart';

@@ -1,4 +1,4 @@
-import 'package:shorthand_app/canvas/canvas.dart';
+import 'package:shorthand_app/canvas/canvas_processor.dart';
 import 'package:shorthand_app/engine/point.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
 import 'package:shorthand_app/new/stroke_util.dart';

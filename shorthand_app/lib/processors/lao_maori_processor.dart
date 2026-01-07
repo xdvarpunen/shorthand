@@ -1,8 +1,8 @@
-import 'package:shorthand_app/canvas/canvas.dart';
+import 'package:shorthand_app/canvas/canvas_processor.dart';
 import 'package:shorthand_app/engine/point.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
 import 'package:shorthand_app/new/angle_inspector_final.dart';
-import 'package:shorthand_app/new/kahakalamahou_processor.dart';
+import 'package:shorthand_app/processors/kahakalamahou_processor.dart';
 
 class LaoMaoriProcessor extends CanvasProcessor {
   // 20
