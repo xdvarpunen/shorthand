@@ -2,6 +2,7 @@ import 'package:shorthand_app/canvas/canvas_processor.dart';
 import 'package:shorthand_app/engine/line_intersection_util.dart';
 import 'package:shorthand_app/engine/point.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
+import 'package:shorthand_app/new/segment_intersection_grouper.dart';
 import 'package:shorthand_app/new/stroke_direction.dart';
 import 'package:shorthand_app/new/stroke_util.dart';
 
@@ -329,39 +330,11 @@ class OghamProcessor extends CanvasProcessor {
   Point mostRightXPoint(List<Point> line) {
     Point maxXPoint = line.first;
     for (final p in line) {
-      if (p.x < maxXPoint.x) {
+      if (p.x > maxXPoint.x) {
         maxXPoint = p;
       }
     }
     return maxXPoint;
-  }
-
-  bool isStart(List<List<Point>> lines) {
-    if (lines.isEmpty) return false;
-    final line = lines.first;
-
-    if (line.length < 2) return false;
-
-    final segments = StrokeCutter.cutByHorizontalDirectionChange(line);
-
-    if (segments.length < 2) return false;
-
-    final firstSegmentIsDirectionLeft = StrokeInspector.isDirectionLeft(
-      segments[0],
-    );
-
-    final secondSegmentIsDirectionRight = StrokeInspector.isDirectionRight(
-      segments[1],
-    );
-
-    Point mostRightXOfLinePoint = mostRightXPoint(line);
-    bool isMostRightXOfLinePointWithinStems =
-        mostRightXOfLinePoint.y > upperEdge() &&
-        mostRightXOfLinePoint.y <= lowerEdge();
-
-    return isMostRightXOfLinePointWithinStems &&
-        firstSegmentIsDirectionLeft &&
-        secondSegmentIsDirectionRight;
   }
 
   bool isEnd(List<List<Point>> lines) {
@@ -392,38 +365,248 @@ class OghamProcessor extends CanvasProcessor {
         secondSegmentIsDirectionRight;
   }
 
+  bool isStart(List<List<Point>> lines) {
+    if (lines.isEmpty) return false;
+    final line = lines.first;
+
+    if (line.length < 2) return false;
+
+    final segments = StrokeCutter.cutByHorizontalDirectionChange(line);
+
+    if (segments.length < 2) return false;
+
+    final firstSegmentIsDirectionRight = StrokeInspector.isDirectionRight(
+      segments[0],
+    );
+
+    final secondSegmentIsDirectionLeft = StrokeInspector.isDirectionLeft(
+      segments[1],
+    );
+
+    Point mostRightXOfLinePoint = mostRightXPoint(line);
+    bool isMostRightXOfLinePointWithinStems =
+        mostRightXOfLinePoint.y > upperEdge() &&
+        mostRightXOfLinePoint.y <= lowerEdge();
+
+    return isMostRightXOfLinePointWithinStems &&
+        firstSegmentIsDirectionRight &&
+        secondSegmentIsDirectionLeft;
+  }
+
+  Point mostTopYPoint(List<Point> line) {
+    Point minYPoint = line.first;
+    for (final p in line) {
+      if (p.y < minYPoint.y) {
+        minYPoint = p;
+      }
+    }
+    return minYPoint;
+  }
+
+  Point mostBottomYPoint(List<Point> line) {
+    Point maxYPoint = line.first;
+    for (final p in line) {
+      if (p.y > maxYPoint.y) {
+        maxYPoint = p;
+      }
+    }
+    return maxYPoint;
+  }
+
   bool isOi(List<List<Point>> lines) {
-    // max y outside stems
-    // min y outside stems
-    // most left x inside stems
-    // most right x inside stems
-    return false;
+    if (lines.isEmpty) return false;
+    final line = lines.first;
+
+    if (line.length < 2) return false;
+
+    Point mostLeftXOfLinePoint = mostLeftXPoint(line);
+    Point mostRightXOfLinePoint = mostRightXPoint(line);
+    Point mostTopYOfLinePoint = mostTopYPoint(line);
+    Point mostBottomYOfLinePoint = mostBottomYPoint(line);
+
+    bool leftIsWithinStems =
+        mostLeftXOfLinePoint.y > upperEdge() &&
+        mostLeftXOfLinePoint.y < lowerEdge();
+    bool rightIsWithinStems =
+        mostRightXOfLinePoint.y > upperEdge() &&
+        mostRightXOfLinePoint.y < lowerEdge();
+    bool topIsAboveStems = mostTopYOfLinePoint.y < upperEdge();
+    bool bottomIsBelowStems = mostBottomYOfLinePoint.y > lowerEdge();
+
+    return leftIsWithinStems &&
+        rightIsWithinStems &&
+        topIsAboveStems &&
+        bottomIsBelowStems;
+  }
+
+  bool hasAllDirections(List<Point> line) {
+    bool hasUp = false;
+    bool hasDown = false;
+    bool hasLeft = false;
+    bool hasRight = false;
+
+    for (int i = 0; i < line.length - 1; i++) {
+      final p1 = line[i];
+      final p2 = line[i + 1];
+
+      final dx = p2.x - p1.x;
+      final dy = p2.y - p1.y;
+
+      if (dy < 0) hasUp = true;
+      if (dy > 0) hasDown = true;
+      if (dx < 0) hasLeft = true;
+      if (dx > 0) hasRight = true;
+
+      // Early exit if all found
+      if (hasUp && hasDown && hasLeft && hasRight) {
+        return true;
+      }
+    }
+
+    return hasUp && hasDown && hasLeft && hasRight;
   }
 
   bool isUi(List<List<Point>> lines) {
+    if (lines.isEmpty) return false;
+    final line = lines.first;
+
+    if (line.length < 2) return false;
     // line cross upper stem
     // left right
     // up down
-    return false;
+
+    List<Point> lowerStem = OghamScriptUtil().lowerStemEdge(
+      locationOfLine,
+      thicknessOfLine,
+    );
+
+    if (!OghamScriptUtil().lineIntersectWithStem(line, lowerStem)) return false;
+
+    bool hasAllDirectionsFound = hasAllDirections(line);
+    return hasAllDirectionsFound;
+
+    // final segmentsVertical = StrokeCutter.cutByVerticalDirectionChange(line);
+
+    // if (segmentsVertical.length < 2) return false;
+
+    // final firstSegmentIsDirectionUp = StrokeInspector.isDirectionUp(
+    //   segmentsVertical[0],
+    // );
+
+    // final secondSegmentIsDirectionDown = StrokeInspector.isDirectionDown(
+    //   segmentsVertical[1],
+    // );
+
+    // final segmentsHorizontal = StrokeCutter.cutByHorizontalDirectionChange(
+    //   line,
+    // );
+
+    // if (segmentsHorizontal.length < 2) return false;
+
+    // final firstSegmentIsDirectionRight = StrokeInspector.isDirectionRight(
+    //   segmentsHorizontal[0],
+    // );
+
+    // final secondSegmentIsDirectionLeft = StrokeInspector.isDirectionLeft(
+    //   segmentsHorizontal[1],
+    // );
+
+    // return firstSegmentIsDirectionUp &&
+    //     secondSegmentIsDirectionDown &&
+    //     firstSegmentIsDirectionRight &&
+    //     secondSegmentIsDirectionLeft;
   }
 
   bool isEa(List<List<Point>> lines) {
+    if (lines.isEmpty) return false;
+    if (lines.length > 2) return false;
     // x
     // two lines that intersect
     // both lines cross upper stem
     // both lines cross lower stem
-    return false;
+    final groups = SegmentIntersectionGrouper.groupByIntersectingLineSegments(
+      lines,
+    );
+
+    if (groups.isEmpty) return false;
+
+    final group = groups[0];
+
+    // Classify strokes by direction
+    final upRight = group.where(
+      (s) =>
+          (StrokeInspector.isDirectionRight(s) &&
+              StrokeInspector.isDirectionUp(s)) ||
+          (StrokeInspector.isDirectionLeft(s) &&
+              StrokeInspector.isDirectionDown(s)),
+    );
+
+    final upLeft = group.where(
+      (s) =>
+          (StrokeInspector.isDirectionLeft(s) &&
+              StrokeInspector.isDirectionUp(s)) ||
+          (StrokeInspector.isDirectionRight(s) &&
+              StrokeInspector.isDirectionDown(s)),
+    );
+
+    bool linesCrossEachOther = upRight.length == 1 && upLeft.length == 1;
+
+    if (!linesCrossEachOther) return false;
+
+    List<Point> upperStem = OghamScriptUtil().upperStemEdge(
+      locationOfLine,
+      thicknessOfLine,
+    );
+    List<Point> lowerStem = OghamScriptUtil().lowerStemEdge(
+      locationOfLine,
+      thicknessOfLine,
+    );
+    bool linesCrossBothUpperAndLowerStem =
+        OghamScriptUtil().lineIntersectWithStem(lines[0], upperStem) &&
+        OghamScriptUtil().lineIntersectWithStem(lines[0], lowerStem) &&
+        OghamScriptUtil().lineIntersectWithStem(lines[1], upperStem) &&
+        OghamScriptUtil().lineIntersectWithStem(lines[1], lowerStem);
+
+    return linesCrossEachOther && linesCrossBothUpperAndLowerStem;
   }
 
-  bool isAe() {
-    // 3 lines intersect 4 lines
-    return false;
+  bool isAe(List<List<Point>> lines) {
+    if (lines.length < 7) return false;
+
+    // First 4 lines must intersect the upper stem
+    final upperStem = OghamScriptUtil().upperStemEdge(
+      locationOfLine,
+      thicknessOfLine,
+    );
+
+    for (int i = 0; i < 4; i++) {
+      if (!OghamScriptUtil().lineIntersectWithStem(lines[i], upperStem)) {
+        return false;
+      }
+    }
+
+    // Now: 3 lines (4,5,6) must intersect ALL of lines (0–3)
+    for (int i = 4; i < 7; i++) {
+      for (int j = 0; j < 4; j++) {
+        if (!LineIntersectionUtil().linesIntersect(lines[i], lines[j])) {
+          return false; // this line does NOT intersect one of 0–3
+        }
+      }
+    }
+
+    return true;
   }
 
   String process(List<List<Point>> lines) {
     if (lines.length == 1) {
-      if (isStart(lines)) {
-        return "Start ᚛";
+      if (isUi(lines)) {
+        return "Ui ᚗ";
+      } else if (isSpace(lines)) {
+        return "Space";
+      } else if (isOi(lines)) {
+        return "Oi ᚖ";
+      } else if (isStart(lines)) {
+        return "Start ᚛"; // picks M for some reason
       } else if (isEnd(lines)) {
         return "End ᚜";
       } else if (isM(lines)) {
@@ -438,7 +621,9 @@ class OghamProcessor extends CanvasProcessor {
         return "P ᚚ";
       }
     } else if (lines.length == 2) {
-      if (isG(lines)) {
+      if (isEa(lines)) {
+        return "Ea ᚕ";
+      } else if (isG(lines)) {
         return "G ᚌ";
       } else if (isD(lines)) {
         return "D ᚇ";
@@ -477,6 +662,10 @@ class OghamProcessor extends CanvasProcessor {
       } else if (isI(lines)) {
         return "I ᚔ";
       }
+    } else if (lines.length == 7) {
+      if (isAe(lines)) {
+        return "Ae ᚙ";
+      }
     }
     return "";
   }
@@ -505,7 +694,7 @@ class OghamProcessor extends CanvasProcessor {
   String getOutput(PointsManager pointsManager) {
     final List<List<Point>> lines = pointsManager.lines
         .map(
-          (line) => reducePoints(line.points, 10),
+          (line) => reducePoints(line.points, 3),
         ) // 3, increase... or just use end points only
         .toList();
 

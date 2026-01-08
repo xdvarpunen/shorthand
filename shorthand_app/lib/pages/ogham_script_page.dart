@@ -21,7 +21,7 @@ class _OghamScriptPageState extends State<OghamScriptPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Ogham Script')),
+      appBar: AppBar(title: const Text('Ogham Script ᚛ᚑᚌᚐᚋ᚜')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
