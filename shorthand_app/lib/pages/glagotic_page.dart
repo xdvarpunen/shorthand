@@ -1,27 +1,28 @@
+
 import 'package:flutter/material.dart';
-import 'package:shorthand_app/canvas/ogham_script_painter.dart';
+import 'package:shorthand_app/canvas/base_paint_canvas.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
-import 'package:shorthand_app/new/ogham_processor.dart';
+import 'package:shorthand_app/new/slavic/glagolitic_processor.dart';
 import 'package:shorthand_app/pages/templates/canvas_template_page.dart';
 
-class OghamScriptPage extends StatefulWidget {
-  const OghamScriptPage({super.key});
+class GlagoticPage extends StatefulWidget {
+  const GlagoticPage({super.key});
 
   @override
-  State<OghamScriptPage> createState() => _OghamScriptPageState();
+  State<GlagoticPage> createState() => _GlagoticPageState();
 }
 
-class _OghamScriptPageState extends State<OghamScriptPage> {
+class _GlagoticPageState extends State<GlagoticPage> {
   final PointsManager _pointsManager = PointsManager();
 
   @override
   Widget build(BuildContext context) {
     return CanvasTemplatePage(
-      title: 'Ogham Script ᚛ᚑᚌᚐᚋ᚜',
+      title: 'Glagotic Script',
       onClear: _pointsManager.reset,
-      canvas: OghamScriptPaintCanvas(
+      canvas: BasePaintCanvas(
         backgroundColor: Colors.grey,
-        processor: OghamProcessor(100, 16),
+        processor: GlagoliticProcessor(),
         showSinglePointCircle: true,
         pointsManager: _pointsManager,
       ),

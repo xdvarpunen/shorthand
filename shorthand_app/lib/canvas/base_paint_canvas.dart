@@ -10,12 +10,14 @@ class BasePaintCanvas extends StatefulWidget {
   final Color backgroundColor;
   final CanvasProcessor? processor;
   final bool showSinglePointCircle;
+  final PointsManager? pointsManager;
 
   const BasePaintCanvas({
     super.key,
     required this.backgroundColor,
     this.processor,
     this.showSinglePointCircle = false,
+    this.pointsManager,
   });
 
   @override
@@ -29,7 +31,7 @@ class BasePaintCanvasState extends State<BasePaintCanvas> {
   @override
   void initState() {
     super.initState();
-    _pointsManager = PointsManager();
+    _pointsManager = widget.pointsManager ?? PointsManager();
   }
 
   void _startDrawing(Offset pos) {
@@ -46,9 +48,6 @@ class BasePaintCanvasState extends State<BasePaintCanvas> {
   }
 
   void _stopDrawing() => setState(() => _currentLine = null);
-
-  // ignore: unused_element
-  void _resetCanvas() => setState(() => _pointsManager.reset());
 
   @override
   Widget build(BuildContext context) {
