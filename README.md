@@ -1,0 +1,3 @@
+# Shorthand
+
+Discovering...
