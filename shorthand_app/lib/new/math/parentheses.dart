@@ -1,0 +1,1 @@
+// left right or right left, over bounding box of number previous or after
