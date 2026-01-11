@@ -10,8 +10,23 @@ class IsSingleLine {
   }
 
   List<Point>? getSingleLine(List<List<Point>> lines) {
-    if (hasLines(lines) && hasSingleLine(lines)) return lines.first;
+    if (hasLines(lines) && hasSingleLine(lines)) {
+      final line = lines.first;
+      if (line.length < 2) return null;
+      return lines.first;
+    }
+
     return null;
+  }
+
+  List<Point>? isLineLengthMoreThanOne(List<Point> line) {
+    if (line.length < 2) return null;
+    return line;
+  }
+
+  List<Point>? isLineLengthOne(List<Point> line) {
+    if (line.length != 1) return null;
+    return line;
   }
 
   bool hasMoreThanOneLine(List<List<Point>> lines) {

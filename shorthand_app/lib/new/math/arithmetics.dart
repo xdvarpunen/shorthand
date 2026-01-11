@@ -4,18 +4,18 @@ import 'package:shorthand_app/engine/point.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
 
 class Arithmetics extends CanvasProcessor {
-  // neper
-  // sounds like number 9 but reverse
-  bool iPlusSign(List<List<Point>> lines) {
-    // angle left only
-    // there top line is above start and end
-    if (lines.isEmpty) return false;
-    final line = lines.first;
+  // // neper
+  // // sounds like number 9 but reverse
+  // bool iPlusSign(List<List<Point>> lines) {
+  //   // angle left only
+  //   // there top line is above start and end
+  //   if (lines.isEmpty) return false;
+  //   final line = lines.first;
 
-    if (line.length < 2) return false;
+  //   if (line.length < 2) return false;
 
-    return LineUtil().checkHorizontalLine(line);
-  }
+  //   return LineUtil().checkHorizontalLine(line);
+  // }
 
   bool isMinusSign(List<List<Point>> lines) {
     // 3 lines
@@ -29,43 +29,46 @@ class Arithmetics extends CanvasProcessor {
     return LineUtil().checkHorizontalLine(line);
   }
 
-  bool isDivisionSign(List<List<Point>> lines) {
-    // circle
-    // vertical crossing twice
-    // could make alternative where
-    // right angle only
-    // intersection between start and end y and x
-    if (lines.isEmpty) return false;
-    final line = lines.first;
+  // bool isDivisionSign(List<List<Point>> lines) {
+  //   // circle
+  //   // vertical crossing twice
+  //   // could make alternative where
+  //   // right angle only
+  //   // intersection between start and end y and x
+  //   if (lines.isEmpty) return false;
+  //   final line = lines.first;
 
-    if (line.length < 2) return false;
+  //   if (line.length < 2) return false;
 
-    return LineUtil().checkHorizontalLine(line);
-  }
+  //   return LineUtil().checkHorizontalLine(line);
+  // }
 
-  bool isMultiplicationSign(List<List<Point>> lines) {
-    // circle
-    // vertical crossing twice
-    // could make alternative where
-    // right angle only
-    // intersection between start and end y and x
-    if (lines.isEmpty) return false;
-    final line = lines.first;
+  // bool isMultiplicationSign(List<List<Point>> lines) {
+  //   // circle
+  //   // vertical crossing twice
+  //   // could make alternative where
+  //   // right angle only
+  //   // intersection between start and end y and x
+  //   if (lines.isEmpty) return false;
+  //   final line = lines.first;
 
-    if (line.length < 2) return false;
+  //   if (line.length < 2) return false;
 
-    return LineUtil().checkHorizontalLine(line);
-  }
+  //   return LineUtil().checkHorizontalLine(line);
+  // }
 
   String process(List<List<Point>> lines) {
-    if (iPlusSign(lines)) {
-      return "+";
-    } else if (isMinusSign(lines)) {
+    // if (iPlusSign(lines)) {
+    //   return "+";
+    // } else if (isMinusSign(lines)) {
+    //   return "-";
+    // } else if (isDivisionSign(lines)) {
+    //   return "/";
+    // } else if (isMultiplicationSign(lines)) {
+    //   return "*";
+    // }
+    if (isMinusSign(lines)) {
       return "-";
-    } else if (isDivisionSign(lines)) {
-      return "/";
-    } else if (isMultiplicationSign(lines)) {
-      return "*";
     }
     return "";
   }
@@ -100,5 +103,11 @@ class Arithmetics extends CanvasProcessor {
 
     final entry = process(lines);
     return 'Char: $entry';
+  }
+}
+
+class CheckArithmetic {
+  String? isMinusSign(List<Point> line) {
+    return LineUtil().checkHorizontalLine(line) ? "-" : null;
   }
 }
