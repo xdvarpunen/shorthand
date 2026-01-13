@@ -1,4 +1,3 @@
-
 import 'package:shorthand_app/engine/line.dart';
 import 'package:shorthand_app/engine/point.dart';
 
@@ -27,4 +26,10 @@ class PointsManager {
       _lines.where((line) => line.points.length > 1).length;
 
   List<Line> get lines => List.unmodifiable(_lines);
+
+  List<List<Point>> toListOfListOfPoints() {
+    return _lines
+        .map((line) => line.points)
+        .toList();
+  }
 }

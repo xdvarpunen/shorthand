@@ -1,8 +1,8 @@
-import 'package:shorthand_app/canvas/canvas_processor.dart';
-import 'package:shorthand_app/encoderdecoder/tomtom_code_decoder.dart';
+import 'package:shorthand_app/common/canvas_processor.dart';
+import 'package:shorthand_app/common/model/lines.dart';
+import 'package:shorthand_app/processors/encoderdecoder/tomtom_code_decoder.dart';
 import 'package:shorthand_app/engine/line_util.dart';
 import 'package:shorthand_app/engine/point.dart';
-import 'package:shorthand_app/engine/point_manager.dart';
 
 class TomtomCodeProcessorService extends CanvasProcessor {
   final LineUtil _lineUtil = LineUtil();
@@ -26,10 +26,8 @@ class TomtomCodeProcessorService extends CanvasProcessor {
   }
 
   @override
-  String getOutput(PointsManager pointsManager) {
-    final List<List<Point>> lines = pointsManager.lines
-        .map<List<Point>>((line) => line.points)
-        .toList();
+  String process(Lines2 lines2) {
+    final List<List<Point>> lines = lines2.toListOfListOfPoints();
     final symbols = linesToSymbols(lines);
     return "Text: ${_tomtomCodeDecoder.interpret(symbols)}";
   }

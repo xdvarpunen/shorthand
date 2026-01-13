@@ -34,6 +34,6 @@ class LineIntersectionUtil {
   // Check if point c lies on segment ab
   bool onSegment(Point a, Point b, Point c) {
     return (c.x >= a.x && c.x <= b.x || c.x >= b.x && c.x <= a.x) &&
-           (c.y >= a.y && c.y <= b.y || c.y >= b.y && c.y <= a.y);
+        (c.y >= a.y && c.y <= b.y || c.y >= b.y && c.y <= a.y);
   }
 }

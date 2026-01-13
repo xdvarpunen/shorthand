@@ -1,35 +1,29 @@
-import 'package:shorthand_app/canvas/canvas_processor.dart';
-import 'package:shorthand_app/encoderdecoder/morse_code_decoder.dart';
-import 'package:shorthand_app/engine/line_util.dart';
-import 'package:shorthand_app/engine/point.dart';
-import 'package:shorthand_app/engine/point_manager.dart';
+import 'package:shorthand_app/common/model/line.dart';
+import 'package:shorthand_app/common/model/lines.dart';
+import 'package:shorthand_app/common/canvas_processor.dart';
+import 'package:shorthand_app/processors/encoderdecoder/morse_code_decoder.dart';
 
 class MorseCodeProcessorService extends CanvasProcessor {
-  final LineUtil _lineUtil = LineUtil();
-  final MorseCodeDecoder _morseCodeDecoder = MorseCodeDecoder();
-
-  List<LineType> linesToSymbols(List<List<Point>> lines) {
+  List<LineType> linesToSymbols(Lines2 lines) {
     List<LineType> symbols = [];
 
-    for (var line in lines) {
-      if (line.length == 1) {
+    for (var line in lines.lines) {
+      if (line.isDot()) {
         symbols.add(LineType.dot);
-      } else if (_lineUtil.checkHorizontalLine(line)) {
+      } else if (line.isHorizontal()) {
         symbols.add(LineType.horizontal);
-      } else if (_lineUtil.checkVerticalLine(line)) {
+      } else if (line.isVertical()) {
         symbols.add(LineType.vertical);
       }
     }
+
     return symbols;
   }
 
   @override
-  String getOutput(PointsManager pointsManager) {
-    final List<List<Point>> lines = pointsManager.lines
-        .map<List<Point>>((line) => line.points)
-        .toList();
-    List<LineType> symbols = linesToSymbols(lines);
-    String entry = _morseCodeDecoder.decode(symbols);
+  String process(Lines2 lines2) {
+    MorseCodeDecoder morseCodeDecoder = MorseCodeDecoder();
+    String entry = morseCodeDecoder.decode(linesToSymbols(lines2));
     return 'Count: $entry';
   }
 }

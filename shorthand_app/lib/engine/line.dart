@@ -1,4 +1,3 @@
-
 import 'package:shorthand_app/engine/point.dart';
 
 class Line {
@@ -11,3 +10,4 @@ class Line {
     points.add(point);
   }
 }
+// PointManagerLine
