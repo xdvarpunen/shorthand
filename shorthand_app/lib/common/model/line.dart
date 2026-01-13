@@ -38,4 +38,14 @@ extension LineTypeExtension on Line2 {
   bool isVertical() {
     return Toolbox().inspectors.lineInspector.checkHorizontalLine(points);
   }
+
+  // Check if the line is descending (y decreases as x increases)
+  bool isDescending() {
+    return points[0].y < points[points.length - 1].y;
+  }
+
+  // Check if the line is ascending (y increases as x increases)
+  bool isAscending() {
+    return points[0].y > points[points.length - 1].y;
+  }
 }

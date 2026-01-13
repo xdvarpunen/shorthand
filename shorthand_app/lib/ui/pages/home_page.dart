@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shorthand_app/ui/pages/about_page.dart';
 import 'package:shorthand_app/ui/pages/morse_page.dart';
 import 'package:shorthand_app/ui/pages/ogham_script_page.dart';
+import 'package:shorthand_app/ui/pages/tomtom_code_page.dart';
 import 'package:shorthand_app/ui/templates/page_list_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -30,9 +31,14 @@ class HomePage extends StatelessWidget {
                           builder: (_) => OghamScriptPage(),
                         ),
                         PageItem(
-                          title: 'Hangul Page',
-                          description: 'Hangul Page',
+                          title: 'Morse Page',
+                          description: 'Morse Page',
                           builder: (_) => MorsePage(),
+                        ),
+                        PageItem(
+                          title: 'Tomtom Code Page',
+                          description: 'Tomtom Code Page',
+                          builder: (_) => TomtomCodePage(),
                         ),
                       ],
                     ),

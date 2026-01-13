@@ -1,23 +1,18 @@
 import 'package:shorthand_app/common/canvas_processor.dart';
+import 'package:shorthand_app/common/model/line.dart';
 import 'package:shorthand_app/common/model/lines.dart';
 import 'package:shorthand_app/processors/encoderdecoder/tomtom_code_decoder.dart';
-import 'package:shorthand_app/engine/line_util.dart';
-import 'package:shorthand_app/engine/point.dart';
 
 class TomtomCodeProcessorService extends CanvasProcessor {
-  final LineUtil _lineUtil = LineUtil();
-  final TomtomCodeDecoder _tomtomCodeDecoder = TomtomCodeDecoder();
-
-  // Convert lines to symbols (ascending, descending, space)
-  List<LineType> linesToSymbols(List<List<Point>> lines) {
+  List<LineType> linesToSymbols(Lines2 lines2) {
     List<LineType> symbols = [];
-    for (var line in lines) {
-      if (_lineUtil.checkHorizontalLine(line)) {
+    for (var line in lines2.lines) {
+      if (line.isHorizontal()) {
         symbols.add(LineType.space);
-      } else if (_lineUtil.checkVerticalLine(line)) {
-        if (_lineUtil.isAscending(line)) {
+      } else if (line.isVertical()) {
+        if (line.isAscending()) {
           symbols.add(LineType.ascending);
-        } else if (_lineUtil.isDescending(line)) {
+        } else if (line.isDescending()) {
           symbols.add(LineType.descending);
         }
       }
@@ -26,9 +21,5 @@ class TomtomCodeProcessorService extends CanvasProcessor {
   }
 
   @override
-  String process(Lines2 lines2) {
-    final List<List<Point>> lines = lines2.toListOfListOfPoints();
-    final symbols = linesToSymbols(lines);
-    return "Text: ${_tomtomCodeDecoder.interpret(symbols)}";
-  }
+  String process(Lines2 lines2) => "Text: ${TomtomCodeDecoder().interpret(linesToSymbols(lines2))}";
 }
