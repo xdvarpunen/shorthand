@@ -37,7 +37,7 @@ Maybe benchmark page, whiteboard/chalkboard, Notepad, Birdwatching...
 
 ## Platforms
 
-Web for now.
+Web for now. Available at site github pages. Using Github Actions to deploy from /main branch.
 
 ## License
 
