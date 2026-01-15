@@ -1,1 +1,0 @@
-// https://abecedaria.blogspot.com/2005/12/john-willis-shorthand.html
