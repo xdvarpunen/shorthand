@@ -1,5 +1,7 @@
 # Shorthand
 
+![alt text](image.png)
+
 Different approach on handwriting recognition. Under construction...  Don't expect much.
 
 There is not that many alphabets in the world really...

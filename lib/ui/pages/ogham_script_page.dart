@@ -21,7 +21,7 @@ class _OghamScriptPageState extends State<OghamScriptPage> {
       onClear: _pointsManager.reset,
       canvas: OghamScriptPaintCanvas(
         backgroundColor: Colors.grey,
-        processor: OghamProcessor(100, 16),
+        processor: OghamProcessor(100, 32),
         showSinglePointCircle: true,
         pointsManager: _pointsManager,
       ),

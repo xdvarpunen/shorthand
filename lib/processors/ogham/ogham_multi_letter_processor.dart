@@ -14,6 +14,8 @@ class OghamMultiLetterProcessor extends CanvasProcessor {
   double upperEdge() => locationOfLine - thicknessOfLine / 2;
   double lowerEdge() => locationOfLine + thicknessOfLine / 2;
 
+  bool isPointBetweenEdges(Point p) => p.y >= upperEdge() && p.y <= lowerEdge();
+
   OghamMultiLetterProcessor(this.locationOfLine, this.thicknessOfLine);
 
   bool isH(List<List<Point>> lines) {
@@ -287,9 +289,7 @@ class OghamMultiLetterProcessor extends CanvasProcessor {
     List<Point> line = lines.first;
     if (line.length < 2) return false;
     for (final p in line) {
-      if (p.y > upperEdge() && p.y <= lowerEdge()) {
-        return false;
-      }
+      if (!isPointBetweenEdges(p)) return false;
     }
     return true;
   }
@@ -579,14 +579,8 @@ class OghamMultiLetterProcessor extends CanvasProcessor {
     if (lines.length == 1) {
       if (isUi(lines)) {
         return "Ui ᚗ";
-      } else if (isSpace(lines)) {
-        return "Space";
       } else if (isOi(lines)) {
         return "Oi ᚖ";
-      } else if (isStart(lines)) {
-        return "Start ᚛"; // picks M for some reason
-      } else if (isEnd(lines)) {
-        return "End ᚜";
       } else if (isM(lines)) {
         return "M ᚋ ";
       } else if (isA(lines)) {
@@ -660,27 +654,65 @@ class OghamMultiLetterProcessor extends CanvasProcessor {
   // Needs to find start, end and space since they are unique
   // Needs to be aware of internal similarity and walk that path
 
+  // @override
+  // String process(Lines2 lines2) {
+  //   final List<List<Point>> allLines = lines2.toListOfListOfPoints();
+
+  //   final List<List<List<Point>>> letters = [];
+  //   List<List<Point>> current = [];
+
+  //   for (final line in allLines) {
+  //     current.add(line);
+
+  //     if (isStart(current) || isEnd(current)) {
+  //       letters.add(List.from(current));
+  //       current.clear();
+  //     } else {
+  //       current = [line];
+  //     }
+  //   }
+
+  //   // Catch any remaining lines
+  //   if (current.isNotEmpty) {
+  //     letters.add(current);
+  //   }
+
+  //   final buffer = StringBuffer();
+
+  //   for (final letterLines in letters) {
+  //     final result = processSingleLetter(Lines2.fromListOfPoints(letterLines));
+
+  //     if (result.isNotEmpty) {
+  //       buffer.write(result);
+  //       buffer.write(' ');
+  //     }
+  //   }
+
+  //   return buffer.toString().trim();
+  // }
+
   @override
   String process(Lines2 lines2) {
-    final List<List<Point>> allLines = lines2.toListOfListOfPoints();
+    final allLines = lines2.toListOfListOfPoints();
 
-    final List<List<List<Point>>> letters = [];
+    final letters = <List<List<Point>>>[];
     List<List<Point>> current = [];
 
     for (final line in allLines) {
-      current.add(line);
-
-      // Treat these as separators / terminators
-      if (isSpace(current) || isEnd(current)) {
-        letters.add(List.from(current));
-        current.clear();
-      } else if (isStart(current)) {
-        // start marker begins a new letter
-        current = [line];
+      // ----- SEPARATORS -----
+      if (isStart([line]) || isSpace([line]) || isEnd([line])) {
+        if (current.isNotEmpty) {
+          letters.add(List.from(current));
+          current.clear();
+        }
+        continue; // separator is ignored otherwise
       }
+
+      // ----- NORMAL STROKE -----
+      current.add(line);
     }
 
-    // Catch any remaining lines
+    // flush last letter
     if (current.isNotEmpty) {
       letters.add(current);
     }

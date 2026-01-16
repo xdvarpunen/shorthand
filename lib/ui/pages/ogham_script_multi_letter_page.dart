@@ -4,14 +4,14 @@ import 'package:shorthand_app/ui/widgets/ogham_script_painter.dart';
 import 'package:shorthand_app/engine/point_manager.dart';
 import 'package:shorthand_app/ui/templates/canvas_template_page.dart';
 
-class OghamScriptPage extends StatefulWidget {
-  const OghamScriptPage({super.key});
+class OghamScriptMultiLetterPage extends StatefulWidget {
+  const OghamScriptMultiLetterPage({super.key});
 
   @override
-  State<OghamScriptPage> createState() => _OghamScriptPageState();
+  State<OghamScriptMultiLetterPage> createState() => _OghamScriptMultiLetterPageState();
 }
 
-class _OghamScriptPageState extends State<OghamScriptPage> {
+class _OghamScriptMultiLetterPageState extends State<OghamScriptMultiLetterPage> {
   final PointsManager _pointsManager = PointsManager();
 
   @override
@@ -21,7 +21,7 @@ class _OghamScriptPageState extends State<OghamScriptPage> {
       onClear: _pointsManager.reset,
       canvas: OghamScriptPaintCanvas(
         backgroundColor: Colors.grey,
-        processor: OghamMultiLetterProcessor(100, 16),
+        processor: OghamMultiLetterProcessor(100, 32),
         showSinglePointCircle: true,
         pointsManager: _pointsManager,
       ),

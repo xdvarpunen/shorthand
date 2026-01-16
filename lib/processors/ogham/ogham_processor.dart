@@ -15,6 +15,8 @@ class OghamProcessor extends CanvasProcessor {
 
   double upperEdge() => locationOfLine - thicknessOfLine / 2;
   double lowerEdge() => locationOfLine + thicknessOfLine / 2;
+  bool isPointBetweenEdges(Point p) =>
+    p.y >= upperEdge() && p.y <= lowerEdge();
 
   OghamProcessor(this.locationOfLine, this.thicknessOfLine);
 
@@ -289,9 +291,7 @@ class OghamProcessor extends CanvasProcessor {
     List<Point> line = lines.first;
     if (line.length < 2) return false;
     for (final p in line) {
-      if (p.y > upperEdge() && p.y <= lowerEdge()) {
-        return false;
-      }
+      if (!isPointBetweenEdges(p)) return false;
     }
     return true;
   }

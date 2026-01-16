@@ -19,7 +19,7 @@ class OghamScriptPaintCanvas extends StatefulWidget {
     this.showSinglePointCircle = false,
     required this.pointsManager,
     this.locationOfLine = 100,
-    this.thicknessOfLine = 16,
+    this.thicknessOfLine = 32,
   });
 
   @override
@@ -138,7 +138,7 @@ class OghamScriptPainter extends CustomPainter {
     );
 
     textPainter.layout();
-    textPainter.paint(canvas, Offset(size.width - 120, 20));
+    textPainter.paint(canvas, Offset(20, 20));
   }
 
   @override
