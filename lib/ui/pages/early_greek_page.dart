@@ -1,30 +1,29 @@
 // import 'package:flutter/material.dart';
 // import 'package:shorthand_app/common/model/lines.dart';
 // import 'package:shorthand_app/common/point_manager.dart';
-// import 'package:shorthand_app/ui/processors/tomtom_code_processor_service.dart';
+// import 'package:shorthand_app/ui/processors/ogham/ogham_processor.dart';
 // import 'package:shorthand_app/ui/widgets/base_paint_canvas.dart';
 // import 'package:shorthand_app/ui/templates/canvas_template_page.dart';
 
-// class TomtomCodePage extends StatefulWidget {
-//   const TomtomCodePage({super.key});
+// class EarlyGreekPage extends StatefulWidget {
+//   const EarlyGreekPage({super.key});
 
 //   @override
-//   State<TomtomCodePage> createState() => _TomtomCodePageState();
+//   State<EarlyGreekPage> createState() => _EarlyGreekPageState();
 // }
 
-// class _TomtomCodePageState extends State<TomtomCodePage> {
+// class _EarlyGreekPageState extends State<EarlyGreekPage> {
 //   final PointsManager _pointsManager = PointsManager(Lines2([]));
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return CanvasTemplatePage(
-//       title: 'Tomtom Code Page',
+//       title: 'Early Greek',
 //       onClear: _pointsManager.reset,
 //       canvas: BasePaintCanvas(
 //         backgroundColor: Colors.grey,
-//         processor: TomtomCodeProcessorService(),
-//         showSinglePointCircle: true,
-//         pointsManager: _pointsManager,
+//         processor: OghamProcessor(100, 32),
+//         showSinglePointCircle: true
 //       ),
 //     );
 //   }

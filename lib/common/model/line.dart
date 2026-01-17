@@ -1,51 +1,13 @@
-import 'package:shorthand_app/common/toolbox/inspectors/lines_intersection_check.dart';
-import 'package:shorthand_app/common/toolbox/toolbox.dart';
-import 'package:shorthand_app/engine/point.dart';
+import 'package:flutter/material.dart';
+import 'package:shorthand_app/common/model/point.dart';
 
-class Line2 {
+@immutable
+class Line {
   final List<Point> points;
 
-  Line2(List<Point>? points) : points = points ?? [];
-}
+  const Line(this.points);
 
-extension IntersectionWithLineExtension on Line2 {
-  bool intersectWith(Line2 line) {
-    return LineIntersectionUtil().linesIntersect(points, line.points);
-  }
-}
-
-extension LinePropertiesExtension on Line2 {
-  Line2? isLineLengthMoreThanOne() {
-    if (points.length < 2) return null;
-    return this;
-  }
-
-  Line2? isLineLengthOne() {
-    if (points.length != 1) return null;
-    return this;
-  }
-}
-
-extension LineTypeExtension on Line2 {
-  bool isDot() {
-    return points.length == 1;
-  }
-
-  bool isHorizontal() {
-    return Toolbox().inspectors.lineInspector.checkHorizontalLine(points);
-  }
-
-  bool isVertical() {
-    return Toolbox().inspectors.lineInspector.checkHorizontalLine(points);
-  }
-
-  // Check if the line is descending (y decreases as x increases)
-  bool isDescending() {
-    return points[0].y < points[points.length - 1].y;
-  }
-
-  // Check if the line is ascending (y increases as x increases)
-  bool isAscending() {
-    return points[0].y > points[points.length - 1].y;
+  Line add(Point p) {
+    return Line([...points, p]);
   }
 }

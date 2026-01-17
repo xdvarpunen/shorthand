@@ -1,5 +1,5 @@
-import 'package:shorthand_app/engine/line_intersection_util.dart';
-import 'package:shorthand_app/engine/point.dart';
+import 'package:shorthand_app/common/core/line_intersection_util.dart';
+import 'package:shorthand_app/common/model/point.dart';
 
 class OghamScriptUtil {
   List<Point> upperStemEdge(

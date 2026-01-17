@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:shorthand_app/ui/widgets/base_paint_canvas.dart';
+import 'package:shorthand_app/common/model/immutable/canvas_controller.dart';
 
 class PaintTypeNoProcessor extends StatelessWidget {
   final Color backgroundColor;
+  final CanvasController controller;
 
-  const PaintTypeNoProcessor({super.key, this.backgroundColor = Colors.grey});
+  const PaintTypeNoProcessor({
+    super.key,
+    this.backgroundColor = Colors.grey,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BasePaintCanvas(
-      backgroundColor: backgroundColor,
-      processor: null,
-      showSinglePointCircle: false,
+    return Container(
+      color: backgroundColor,
+      child: Stack(
+        children: [
+          CanvasView(controller: controller),
+          CanvasGestureLayer(controller: controller),
+        ],
+      ),
     );
   }
 }

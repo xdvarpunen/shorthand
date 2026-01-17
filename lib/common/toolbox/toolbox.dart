@@ -1,23 +1,20 @@
 import 'package:shorthand_app/common/toolbox/filters/filters.dart';
 import 'package:shorthand_app/common/toolbox/inspectors/inspectors.dart';
-// import 'package:shorthand_app/common/toolbox/point_manager/point_manager.dart';
 import 'package:shorthand_app/common/toolbox/transformers/transformers.dart';
+import 'package:shorthand_app/common/toolbox/validators/validators.dart';
 
 class Toolbox {
-  // final PointsManager pointsManager = PointsManager();
-  // Groupers
-  // Cutters
+  final Groupers groupers = Groupers();
+  final Cutters cutters = Cutters();
   final Filters filters = Filters();
-  // final Validators inspectors = Validators();
+  final Validators validators = Validators();
   final Inspectors inspectors = Inspectors();
   final Transformers transformers = Transformers();
 }
 
+class Cutters {}
 
-// Attaching to common data types according to Law of Demeter
+class Groupers {}
 
-// Actually now that i think about it this is cool separate thing
-// We use Law of Demeter for discovering through types
-// We use Toolbox for discovering tools within those types
-
-// where bounding box and intersection goes?
+// where bounding box and intersection goes? to bounding box concept. part of line or lines
+// we use toolbox to discover tools needed through organization

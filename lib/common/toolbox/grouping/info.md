@@ -37,6 +37,22 @@ Especially using morse code taught using enums to represent each letter is impor
 
 Creating data for testing is sort of issue when don't know what type of letters human needs. After certain point there seem to build up confidence of creating data for testing. On the other hand if code is small enough manual testing should be enough. Better quality needs test data builder. Do when "solidified".
 
+# Communication
+
+Here using pattern recognition as way to communicate how identifiers are collected and constructing test data to visualization would be great.
+
 # Pigpen script
 
-Yes.
+Yes. In a sense we could solve the issue of corner and curve. In a sense it is not a problem. Add more line strokes! Borrowing idea from Hangul. Corner and curve consist of 
+
+# Early Greek Alphabet
+
+https://en.wikipedia.org/wiki/File:NAMA_Alphabet_grec.jpg
+
+1. bounding box => add to list
+2. intersect => add to list
+3. process
+
+Simple.
+
+

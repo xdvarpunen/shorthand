@@ -6,6 +6,14 @@ Different approach on handwriting recognition. Under construction...  Don't expe
 
 There is not that many alphabets in the world really...
 
+There is __ from each continent at least one script recognized from time until medieval:
+- America: Morse
+- Europe: Ogham
+- Africa:
+- Asia: 
+- Australia: 
+- Polynesia: they don't have
+
 ---
 
 ## Discovered
@@ -33,9 +41,14 @@ More to come...
 
 No documentation how to write yet so you have to unfortunately read code... :)
 
+
+### Whiteboard/Chalkboard
+
+- JustPaintPage: Think of this as whiteboard/chalkboard
+
 ## Roadmap
 
-Maybe benchmark page, whiteboard/chalkboard, Notepad, Birdwatching...
+Maybe benchmark page, Notepad (clipboard feature?), Birdwatching...
 
 ## Platforms
 

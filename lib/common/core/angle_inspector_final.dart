@@ -1,4 +1,4 @@
-import 'package:shorthand_app/engine/point.dart';
+import 'package:shorthand_app/common/model/point.dart';
 import 'dart:math';
 
 enum LineDirection { none, left, right }

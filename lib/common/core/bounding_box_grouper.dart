@@ -1,4 +1,4 @@
-import 'package:shorthand_app/engine/point.dart';
+import 'package:shorthand_app/common/model/point.dart';
 
 class BoundingBoxGrouper {
   /// Group strokes (list of points) whose bounding boxes intersect
