@@ -39,14 +39,86 @@ import 'package:shorthand_app/common/model/immutable/canvas_controller.dart';
 //     );
 //   }
 // }
+// class CanvasComplexTemplatePage extends StatelessWidget {
+//   final String title;
+//   final Widget canvas;
+//   final VoidCallback? onClear;
+//   final VoidCallback? onUndo;
+//   final VoidCallback? onRedo;
+//   final VoidCallback? onToggleTool;
+//   final Tool? currentTool;
+
+//   const CanvasComplexTemplatePage({
+//     super.key,
+//     required this.title,
+//     required this.canvas,
+//     this.onClear,
+//     this.onUndo,
+//     this.onRedo,
+//     this.onToggleTool,
+//     this.currentTool,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(title),
+//         actions: [
+//           if (onUndo != null)
+//             IconButton(icon: const Icon(Icons.undo), onPressed: onUndo),
+//           if (onRedo != null)
+//             IconButton(icon: const Icon(Icons.redo), onPressed: onRedo),
+//           if (onToggleTool != null)
+//             // IconButton(
+//             //   icon: Icon(currentTool == Tool.pen
+//             //       ? Icons.edit
+//             //       : Icons.cleaning_services),
+//             //   onPressed: onToggleTool,
+//             // ),
+//             // Pen/Eraser Switch
+//             // Row(
+//             //   children: [
+//             //     const Text('Pen'),
+//             //     Switch(
+//             //       value: currentTool == Tool.eraser, // use the prop
+//             //       onChanged: (_) => onToggleTool?.call(),
+//             //     ),
+//             //     const Text('Eraser'),
+//             //   ],
+//             // ),
+//             AnimatedBuilder(
+//               animation: _controller,
+//               builder: (context, _) {
+//                 return Row(
+//                   children: [
+//                     const Text('Pen'),
+//                     Switch(
+//                       value: _controller.tool == Tool.eraser,
+//                       onChanged: (_) => _controller.toggleTool(),
+//                     ),
+//                     const Text('Eraser'),
+//                   ],
+//                 );
+//               },
+//             ),
+//           if (onClear != null)
+//             IconButton(icon: const Icon(Icons.clear), onPressed: onClear),
+//         ],
+//       ),
+//       body: Padding(padding: const EdgeInsets.all(16), child: canvas),
+//     );
+//   }
+// }
+
+
 class CanvasComplexTemplatePage extends StatelessWidget {
   final String title;
   final Widget canvas;
   final VoidCallback? onClear;
   final VoidCallback? onUndo;
   final VoidCallback? onRedo;
-  final VoidCallback? onToggleTool;
-  final Tool? currentTool;
+  final CanvasController? controller;
 
   const CanvasComplexTemplatePage({
     super.key,
@@ -55,8 +127,7 @@ class CanvasComplexTemplatePage extends StatelessWidget {
     this.onClear,
     this.onUndo,
     this.onRedo,
-    this.onToggleTool,
-    this.currentTool,
+    this.controller,
   });
 
   @override
@@ -69,29 +140,30 @@ class CanvasComplexTemplatePage extends StatelessWidget {
             IconButton(icon: const Icon(Icons.undo), onPressed: onUndo),
           if (onRedo != null)
             IconButton(icon: const Icon(Icons.redo), onPressed: onRedo),
-          if (onToggleTool != null)
-            // IconButton(
-            //   icon: Icon(currentTool == Tool.pen
-            //       ? Icons.edit
-            //       : Icons.cleaning_services),
-            //   onPressed: onToggleTool,
-            // ),
-            // Pen/Eraser Switch
-            Row(
-              children: [
-                const Text('Pen'),
-                Switch(
-                  value: currentTool == Tool.eraser, // use the prop
-                  onChanged: (_) => onToggleTool?.call(),
-                ),
-                const Text('Eraser'),
-              ],
+          if (controller != null)
+            AnimatedBuilder(
+              animation: controller!,
+              builder: (context, _) {
+                return Row(
+                  children: [
+                    const Text('Pen'),
+                    Switch(
+                      value: controller!.tool == Tool.eraser,
+                      onChanged: (_) => controller!.toggleTool(),
+                    ),
+                    const Text('Eraser'),
+                  ],
+                );
+              },
             ),
           if (onClear != null)
             IconButton(icon: const Icon(Icons.clear), onPressed: onClear),
         ],
       ),
-      body: Padding(padding: const EdgeInsets.all(16), child: canvas),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: canvas,
+      ),
     );
   }
 }

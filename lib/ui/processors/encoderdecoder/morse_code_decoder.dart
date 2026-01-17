@@ -1,4 +1,5 @@
-enum LineType { dot, horizontal, vertical }
+// enum LineType { dot, horizontal, vertical }
+enum LineType { dot, horizontal, vertical, ignored }
 
 class MorseCodeDecoder {
   static const Map<String, String> _morseDictionary = {

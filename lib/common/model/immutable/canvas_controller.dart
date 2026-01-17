@@ -5,26 +5,86 @@ import 'package:shorthand_app/common/model/immutable/canvas_model.dart';
 import 'package:shorthand_app/common/model/line.dart';
 import 'package:shorthand_app/common/model/point.dart';
 
+/// Generic processor of lines to any output type
+abstract class LinesInterpreter<T> {
+  /// Transform a list of lines to an output
+  T process(List<Line> lines);
+}
+
 enum Tool { pen, eraser }
 
 class CanvasController extends ChangeNotifier {
   CanvasModel _model = CanvasModel.empty();
   Tool _tool = Tool.pen;
 
+  String _outputText = '';
+  bool processOnPointerUp = false;
+  LinesInterpreter<String>? _interpreter;
+
   final List<CanvasModel> _undoStack = [];
   final List<CanvasModel> _redoStack = [];
 
   CanvasModel get model => _model;
   Tool get tool => _tool;
+  String get outputText => _outputText;
+
+  CanvasController({
+    LinesInterpreter<String>? interpreter,
+    this.processOnPointerUp = false,
+    CanvasModel? initialModel,
+    Tool initialTool = Tool.pen,
+  }) : _interpreter = interpreter,
+       _model = initialModel ?? CanvasModel.empty(),
+       _tool = initialTool,
+       _outputText = '';
 
   void _commit(CanvasModel next) {
     _undoStack.add(_model);
     _model = next;
     _redoStack.clear();
+    if (!processOnPointerUp) _updateOutput();
     notifyListeners();
   }
 
-  CanvasState get state => CanvasState(model: _model, tool: _tool);
+  void setInterpreter(LinesInterpreter<String>? interpreter) {
+    _interpreter = interpreter;
+    if (!processOnPointerUp) _updateOutput();
+  }
+
+  // void _updateOutput() {
+  //   if (_interpreter == null) return;
+  //   _outputText = _interpreter!.process(_model.lines);
+  // }
+  void _updateOutput() {
+    if (_interpreter == null) return;
+    _outputText = _interpreter!.process(_model.lines);
+    notifyListeners(); // <-- ensure this
+  }
+
+  void endLine() {
+    // Always commit the final line for undo
+    if (_tool == Tool.pen && _model.lines.isNotEmpty) {
+      _commit(_model);
+    }
+
+    if (processOnPointerUp) {
+      _updateOutput();
+      notifyListeners();
+    }
+  }
+  // void endLine() {
+  //   if (processOnPointerUp) {
+  //     _updateOutput(); // process after pointer up
+  //     notifyListeners();
+  //   }
+  // }
+
+  // void endLine() {
+  //   if (processOnPointerUp) _updateOutput();
+  // }
+
+  CanvasState get state =>
+      CanvasState(model: _model, tool: _tool, outputText: _outputText);
 
   void toggleTool() {
     _tool = _tool == Tool.pen ? Tool.eraser : Tool.pen;
@@ -40,16 +100,6 @@ class CanvasController extends ChangeNotifier {
     }
   }
 
-  // void addPoint(Offset o) {
-  //   if (_tool != Tool.pen || _model.lines.isEmpty) return;
-
-  //   final lastLine = _model.lines.last;
-  //   final updatedLine = lastLine.add(Point(o.dx, o.dy));
-  //   final updatedLines = [..._model.lines];
-  //   updatedLines[updatedLines.length - 1] = updatedLine;
-  //   _model = CanvasModel(lines: updatedLines);
-  //   notifyListeners();
-  // }
   void addPoint(Offset o) {
     final p = Point(o.dx, o.dy);
 
@@ -60,6 +110,7 @@ class CanvasController extends ChangeNotifier {
       final updatedLines = [..._model.lines];
       updatedLines[updatedLines.length - 1] = updatedLine;
       _model = CanvasModel(lines: updatedLines);
+      if (!processOnPointerUp) _updateOutput();
       notifyListeners();
     } else if (_tool == Tool.eraser) {
       // Continuous eraser while dragging
@@ -76,7 +127,19 @@ class CanvasController extends ChangeNotifier {
     }
   }
 
+  // bool _isPointOnLine(Point p, Line line) {
+  //   for (int i = 0; i < line.points.length - 1; i++) {
+  //     final a = line.points[i];
+  //     final b = line.points[i + 1];
+  //     if (_distanceToSegment(p, a, b) < 10) return true;
+  //   }
+  //   return false;
+  // }
   bool _isPointOnLine(Point p, Line line) {
+    if (line.points.length == 1) {
+      return _distance(p, line.points.first) < 10; // radius threshold
+    }
+
     for (int i = 0; i < line.points.length - 1; i++) {
       final a = line.points[i];
       final b = line.points[i + 1];
@@ -157,7 +220,7 @@ class CanvasGestureLayer extends StatelessWidget {
     return GestureDetector(
       onPanStart: (d) => controller.startLine(d.localPosition),
       onPanUpdate: (d) => controller.addPoint(d.localPosition),
-      onPanEnd: (_) {}, // nothing needed for end with your current model
+      onPanEnd: (_) => controller.endLine(),
       child: Container(color: Colors.transparent),
     );
   }

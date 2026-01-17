@@ -32,11 +32,10 @@ class _JustPaintPageState extends State<JustPaintPage> {
   Widget build(BuildContext context) {
     return CanvasComplexTemplatePage(
       title: 'Just Paint Page',
-      currentTool: _controller.state.tool,
+      controller: _controller,
       onClear: _controller.clear,
       onUndo: _controller.undo,
       onRedo: _controller.redo,
-      onToggleTool: _controller.toggleTool,
       canvas: PaintTypeNoProcessor(
         backgroundColor: Colors.grey,
         controller: _controller,

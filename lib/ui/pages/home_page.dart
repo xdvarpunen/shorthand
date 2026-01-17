@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shorthand_app/ui/pages/about_page.dart';
 import 'package:shorthand_app/ui/pages/just_paint_page.dart';
+import 'package:shorthand_app/ui/pages/morse_page.dart';
 // import 'package:shorthand_app/ui/pages/morse_page.dart';
 // import 'package:shorthand_app/ui/pages/ogham_script_multi_letter_page.dart';
 // import 'package:shorthand_app/ui/pages/ogham_script_page.dart';
@@ -43,11 +44,11 @@ class HomePage extends StatelessWidget {
                         //   description: 'Ogham Script 2 Page',
                         //   builder: (_) => OghamScriptMultiLetterPage(),
                         // ),
-                        // PageItem(
-                        //   title: 'Morse Page',
-                        //   description: 'Morse Page',
-                        //   builder: (_) => MorsePage(),
-                        // ),
+                        PageItem(
+                          title: 'Morse Page',
+                          description: 'Morse Page',
+                          builder: (_) => MorsePage(),
+                        ),
                         // PageItem(
                         //   title: 'Tomtom Code Page',
                         //   description: 'Tomtom Code Page',
