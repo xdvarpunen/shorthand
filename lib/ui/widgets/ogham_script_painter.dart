@@ -1,147 +1,184 @@
-// import 'package:flutter/material.dart';
-// import 'package:shorthand_app/common/canvas_processor.dart';
-// import 'package:shorthand_app/common/model/line.dart';
-// import 'package:shorthand_app/common/model/point.dart';
-// import 'package:shorthand_app/common/point_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:shorthand_app/common/model/immutable/canvas_controller.dart';
+/// Ogham canvas page
+class OghamPage extends StatefulWidget {
+  final double locationOfLine;
+  final double thicknessOfLine;
+  final Color backgroundColor;
+  final TextLinesInterpreter? textInterpreter;
 
-// class OghamScriptPaintCanvas extends StatefulWidget {
-//   final Color backgroundColor;
-//   final CanvasProcessor? processor;
-//   final bool showSinglePointCircle;
-//   final PointsManager pointsManager;
-//   final double locationOfLine;
-//   final double thicknessOfLine;
+  const OghamPage({
+    super.key,
+    this.locationOfLine = 100,
+    this.thicknessOfLine = 32,
+    this.backgroundColor = Colors.grey,
+    this.textInterpreter,
+  });
 
-//   const OghamScriptPaintCanvas({
-//     super.key,
-//     required this.backgroundColor,
-//     this.processor,
-//     this.showSinglePointCircle = false,
-//     required this.pointsManager,
-//     this.locationOfLine = 100,
-//     this.thicknessOfLine = 32,
-//   });
+  @override
+  State<OghamPage> createState() => _OghamPageState();
+}
 
-//   @override
-//   OghamScriptPaintCanvasState createState() => OghamScriptPaintCanvasState();
-// }
+class _OghamPageState extends State<OghamPage> {
+  late final CanvasController _controller;
 
-// class OghamScriptPaintCanvasState extends State<OghamScriptPaintCanvas> {
-//   Line2? _currentLine;
+  @override
+  void initState() {
+    super.initState();
+    _controller = CanvasController(
+      textInterpreter: widget.textInterpreter,
+      processOnPointerUp: true,
+    );
+  }
 
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
+  void _resetCanvas() {
+    _controller.clear();
+  }
 
-//   void _startDrawing(Offset pos) {
-//     setState(() {
-//       widget.pointsManager = widget.pointsManager.addLine(Point(pos.dx, pos.dy))
-//       _currentLine = widget.pointsManager.addLine(Point(pos.dx, pos.dy));
-//     });
-//   }
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
-//   void _draw(Offset pos) {
-//     if (_currentLine == null) return;
-//     setState(() {
-//       widget.pointsManager.addPoint(_currentLine!, Point(pos.dx, pos.dy));
-//     });
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Ogham Canvas'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: _resetCanvas,
+          ),
+          IconButton(
+            icon: const Icon(Icons.undo),
+            onPressed: _controller.undo,
+          ),
+          IconButton(
+            icon: const Icon(Icons.redo),
+            onPressed: _controller.redo,
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          OghamPainterWidget(
+            controller: _controller,
+            locationOfLine: widget.locationOfLine,
+            thicknessOfLine: widget.thicknessOfLine,
+            backgroundColor: widget.backgroundColor,
+          ),
+          CanvasGestureLayer(controller: _controller),
+        ],
+      ),
+    );
+  }
+}
 
-//   void _stopDrawing() => setState(() => _currentLine = null);
+/// Painter + background line
+class OghamPainterWidget extends StatelessWidget {
+  final CanvasController controller;
+  final double locationOfLine;
+  final double thicknessOfLine;
+  final Color backgroundColor;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       color: widget.backgroundColor,
-//       child: GestureDetector(
-//         onPanStart: (details) => _startDrawing(details.localPosition),
-//         onPanUpdate: (details) => _draw(details.localPosition),
-//         onPanEnd: (_) => _stopDrawing(),
-//         child: CustomPaint(
-//           painter: OghamScriptPainter(
-//             pointsManager: widget.pointsManager,
-//             processor: widget.processor,
-//             showSinglePointCircle: widget.showSinglePointCircle,
-//             locationOfLine: widget.locationOfLine,
-//             thicknessOfLine: widget.thicknessOfLine
-//           ),
-//           size: Size.infinite,
-//         ),
-//       ),
-//     );
-//   }
-// }
+  const OghamPainterWidget({
+    super.key,
+    required this.controller,
+    required this.locationOfLine,
+    required this.thicknessOfLine,
+    required this.backgroundColor,
+  });
 
-// class OghamScriptPainter extends CustomPainter {
-//   final PointsManager pointsManager;
-//   final CanvasProcessor? processor;
-//   final bool showSinglePointCircle;
-//   final double locationOfLine;
-//   final double thicknessOfLine;
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (_, __) {
+        return CustomPaint(
+          painter: _OghamPainter(
+            state: controller.state,
+            locationOfLine: locationOfLine,
+            thicknessOfLine: thicknessOfLine,
+            backgroundColor: backgroundColor,
+          ),
+          size: Size.infinite,
+        );
+      },
+    );
+  }
+}
 
-//   OghamScriptPainter({
-//     required this.pointsManager,
-//     required this.processor,
-//     required this.showSinglePointCircle,
-//     required this.locationOfLine,
-//     required this.thicknessOfLine,
-//   });
+class _OghamPainter extends CustomPainter {
+  final CanvasState state;
+  final double locationOfLine;
+  final double thicknessOfLine;
+  final Color backgroundColor;
 
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     final paint = Paint()
-//       ..color = Colors.black
-//       ..strokeCap = StrokeCap.round
-//       ..strokeWidth = 5.0;
+  _OghamPainter({
+    required this.state,
+    required this.locationOfLine,
+    required this.thicknessOfLine,
+    required this.backgroundColor,
+  });
 
-//     // 1. Draw background line
-//     _drawBackgroundLine(canvas, size);
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 1. Background
+    final bgPaint = Paint()..color = backgroundColor;
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), bgPaint);
 
-//     // 2. Draw all lines from PointsManager
-//     _drawLines(canvas, size, paint);
+    // 2. Background line
+    final linePaint = Paint()
+      ..color = Colors.blueGrey
+      ..strokeWidth = thicknessOfLine
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(0, locationOfLine),
+      Offset(size.width, locationOfLine),
+      linePaint,
+    );
 
-//     // 3. Draw processor output text
-//     _drawProcessorText(canvas, size);
-//   }
+    // 3. Draw user lines
+    final paint = Paint()
+      ..color = Colors.black
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5.0;
 
-//   // 1. Background line painting
-//   void _drawBackgroundLine(Canvas canvas, Size size) {
-//     final paint = Paint()
-//       ..color = Colors.blueGrey
-//       ..strokeWidth = thicknessOfLine;
-//     canvas.drawLine(Offset(0, locationOfLine), Offset(size.width, locationOfLine), paint);
-//   }
+    for (final line in state.model.lines) {
+      final points = line.points;
+      if (points.isEmpty) continue;
 
-//   // 2. Draw lines from PointsManager
-//   void _drawLines(Canvas canvas, Size size, Paint paint) {
-//     for (final line in pointsManager.lines.lines) {
-//       if (line.points.length == 1) {
-//         final p1 = line.points[0];
-//         canvas.drawCircle(Offset(p1.x, p1.y), 5.0, paint);
-//       } else if (line.points.length > 1) {
-//         for (int i = 0; i < line.points.length - 1; i++) {
-//           final p1 = line.points[i];
-//           final p2 = line.points[i + 1];
-//           canvas.drawLine(Offset(p1.x, p1.y), Offset(p2.x, p2.y), paint);
-//         }
-//       }
-//     }
-//   }
+      if (points.length == 1) {
+        canvas.drawCircle(Offset(points.first.x, points.first.y), 3.0, paint);
+      } else {
+        for (int i = 0; i < points.length - 1; i++) {
+          final p1 = points[i];
+          final p2 = points[i + 1];
+          canvas.drawLine(
+            Offset(p1.x, p1.y),
+            Offset(p2.x, p2.y),
+            paint,
+          );
+        }
+      }
+    }
 
-//   // 3. Draw the processor's output text
-//   void _drawProcessorText(Canvas canvas, Size size) {
-//     final outputText = processor?.getOutput(pointsManager);
-//     final textStyle = TextStyle(color: Colors.black, fontSize: 20);
-//     final textPainter = TextPainter(
-//       text: TextSpan(text: outputText, style: textStyle),
-//       textDirection: TextDirection.ltr,
-//     );
+    // 4. Draw processor output text
+    if (state.outputText.isNotEmpty) {
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: state.outputText,
+          style: const TextStyle(fontSize: 20, color: Colors.black),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
 
-//     textPainter.layout();
-//     textPainter.paint(canvas, Offset(20, 20));
-//   }
+      textPainter.paint(canvas, Offset(20, 20));
+    }
+  }
 
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-// }
+  @override
+  bool shouldRepaint(covariant _OghamPainter old) => old.state != state;
+}

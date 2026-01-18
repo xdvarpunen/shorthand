@@ -3,11 +3,13 @@ import 'package:shorthand_app/ui/pages/about_page.dart';
 import 'package:shorthand_app/ui/pages/just_paint_page.dart';
 import 'package:shorthand_app/ui/pages/morse_page.dart';
 import 'package:shorthand_app/ui/pages/power_symbol_page.dart';
+import 'package:shorthand_app/ui/processors/ogham/ogham_multi_letter.dart';
 // import 'package:shorthand_app/ui/pages/morse_page.dart';
 // import 'package:shorthand_app/ui/pages/ogham_script_multi_letter_page.dart';
 // import 'package:shorthand_app/ui/pages/ogham_script_page.dart';
 // import 'package:shorthand_app/ui/pages/tomtom_code_page.dart';
 import 'package:shorthand_app/ui/templates/page_list_page.dart';
+import 'package:shorthand_app/ui/widgets/ogham_script_painter.dart';
 // import 'package:shorthand_app/ui/pages/power_symbol_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -49,6 +51,13 @@ class HomePage extends StatelessWidget {
                           title: 'Morse Page',
                           description: 'Morse Page',
                           builder: (_) => MorsePage(),
+                        ),
+                        PageItem(
+                          title: 'Morse2 Page',
+                          description: 'Morse 2Page',
+                          builder: (_) => OghamPage(
+                            textInterpreter: OghamMultiLetterProcessor(100, 16),
+                          ),
                         ),
                         // PageItem(
                         //   title: 'Tomtom Code Page',
