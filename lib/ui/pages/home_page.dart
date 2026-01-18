@@ -4,6 +4,7 @@ import 'package:shorthand_app/ui/pages/cuneiform_page.dart';
 import 'package:shorthand_app/ui/pages/just_paint_page.dart';
 import 'package:shorthand_app/ui/pages/morse_page.dart';
 import 'package:shorthand_app/ui/pages/power_symbol_page.dart';
+import 'package:shorthand_app/ui/pages/tomtom_code_page.dart';
 import 'package:shorthand_app/ui/processors/ogham/ogham_multi_letter.dart';
 // import 'package:shorthand_app/ui/pages/morse_page.dart';
 // import 'package:shorthand_app/ui/pages/ogham_script_multi_letter_page.dart';
@@ -60,11 +61,11 @@ class HomePage extends StatelessWidget {
                             textInterpreter: OghamMultiLetterProcessor(100, 16),
                           ),
                         ),
-                        // PageItem(
-                        //   title: 'Tomtom Code Page',
-                        //   description: 'Tomtom Code Page',
-                        //   builder: (_) => TomtomCodePage(),
-                        // ),
+                        PageItem(
+                          title: 'Tomtom Code Page',
+                          description: 'Tomtom Code Page',
+                          builder: (_) => TomtomCodePage(),
+                        ),
                         PageItem(
                           title: 'Power Symbol Page',
                           description: 'Power Symbol Page',
