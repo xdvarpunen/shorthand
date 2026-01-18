@@ -1,3 +1,13 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+import 'package:shorthand_app/common/core/line_intersection_util.dart';
+import 'package:shorthand_app/common/model/immutable/canvas_controller.dart';
+import 'package:shorthand_app/common/model/line.dart';
+import 'package:shorthand_app/common/toolbox/filters/minimum_distance_filter.dart';
+import 'package:shorthand_app/ui/templates/canvas_complex_template_page.dart';
+import 'package:shorthand_app/ui/widgets/paint_type_no_processor.dart';
+
 // import 'package:flutter/material.dart';
 // import 'package:shorthand_app/common/canvas_processor.dart';
 // import 'package:shorthand_app/common/model/line.dart';
@@ -122,3 +132,219 @@
 //     _alreadyTriggered = false;
 //   }
 // }
+
+// class PowerSymbolInterpreter extends ActionLinesInterpreter {
+//   final VoidCallback turnOnOff;
+//   final VoidCallback resetCanvas;
+
+//   bool _alreadyTriggered = false;
+
+//   PowerSymbolInterpreter({required this.turnOnOff, required this.resetCanvas});
+//   final VoidCallback onTrigger;
+//   bool _alreadyTriggered = false;
+
+//   PowerSymbolInterpreter({required this.onTrigger});
+
+//   @override
+//   void process(List<Line> lines) {
+//     if (_alreadyTriggered || lines.length != 2) return;
+
+//     if (_matchesPowerSymbol(lines)) {
+//       _alreadyTriggered = true;
+//       onTrigger();
+//     }
+//   }
+
+//   void resetTrigger() => _alreadyTriggered = false;
+//   @override
+//   void process(List<Line> lines) {
+//     if (_alreadyTriggered) return;
+//     if (lines.length != 2) return;
+
+//     final line1 = lines[0];
+//     final line2 = lines[1];
+
+//     final bool linesDontIntersect = !LineIntersectionUtil.linesIntersect(
+//       line1.points,
+//       line2.points,
+//     );
+
+//     final bool endLinesIntersect = LineIntersectionUtil.linesIntersect(
+//       [line1.points.first, line1.points.last],
+//       [line2.points.first, line2.points.last],
+//     );
+
+//     if (linesDontIntersect && endLinesIntersect) {
+//       _alreadyTriggered = true;
+//       turnOnOff();
+//       resetCanvas();
+//     }
+//   }
+
+//   void resetTrigger() {
+//     _alreadyTriggered = false;
+//   }
+// }
+class PowerSymbolInterpreter extends ActionLinesInterpreter {
+  final VoidCallback onTrigger;
+  bool _alreadyTriggered = false;
+
+  PowerSymbolInterpreter({required this.onTrigger});
+
+  @override
+  void process(List<Line> lines) {
+    // print('PowerSymbol process called: ${lines.length} lines');
+    if (_alreadyTriggered || lines.length != 2) return;
+
+    final line1 = MinimumDistanceFilter.reducePoints(lines[0].points, 10);
+    final line2 = MinimumDistanceFilter.reducePoints(lines[1].points, 10);
+
+    // final bool linesDontIntersect = !LineIntersectionUtil.linesIntersect(
+    //   line1,
+    //   line2,
+    // );
+
+    final bool endLinesIntersect = LineIntersectionUtil.linesIntersect(
+      [line1.first, line1.last],
+      [line2.first, line2.last],
+    );
+
+    // if (linesDontIntersect && endLinesIntersect) {
+    //   _alreadyTriggered = true;
+    //   onTrigger();
+    // }
+    if (endLinesIntersect) {
+      _alreadyTriggered = true;
+      onTrigger();
+    }
+  }
+
+  void resetTrigger() {
+    _alreadyTriggered = false;
+  }
+}
+
+class PowerSymbolPage extends StatefulWidget {
+  const PowerSymbolPage({super.key});
+
+  @override
+  State<PowerSymbolPage> createState() => _PowerSymbolPageState();
+}
+
+// class _PowerSymbolPageState extends State<PowerSymbolPage> {
+//   late final CanvasController _controller;
+//   late final PowerSymbolInterpreter _interpreter;
+
+//   bool isPowerOn = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     _controller = CanvasController(processOnPointerUp: true);
+
+//     _interpreter = PowerSymbolInterpreter(
+//       turnOnOff: _togglePower,
+//       resetCanvas: _resetCanvas,
+//     );
+
+//     _controller.setActionInterpreter(_interpreter);
+//   }
+
+//   void _togglePower() {
+//     setState(() => isPowerOn = !isPowerOn);
+
+//     ScaffoldMessenger.of(context)
+//       ..hideCurrentSnackBar()
+//       ..showSnackBar(
+//         SnackBar(
+//           content: Text(isPowerOn ? 'Power On!' : 'Power Off!'),
+//           duration: const Duration(seconds: 1),
+//         ),
+//       );
+//   }
+
+//   void _resetCanvas() {
+//     _controller.clear();
+//     _interpreter.resetTrigger();
+//   }
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return CanvasComplexTemplatePage(
+//       title: 'Power Symbol Page',
+//       onClear: _resetCanvas,
+//       canvas: PaintTypeNoProcessor(
+//         backgroundColor: Colors.grey,
+//         controller: _controller,
+//       ),
+//     );
+//   }
+// }
+class _PowerSymbolPageState extends State<PowerSymbolPage> {
+  late final CanvasController _controller;
+  late final PowerSymbolInterpreter _interpreter;
+
+  bool isPowerOn = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _interpreter = PowerSymbolInterpreter(onTrigger: _onPowerSymbolDetected);
+    _controller = CanvasController(
+      processOnPointerUp: true,
+      actionInterpreter: _interpreter,
+    );
+
+    _controller.setActionInterpreter(_interpreter);
+  }
+
+  void _onPowerSymbolDetected() {
+    setState(() => isPowerOn = !isPowerOn);
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(isPowerOn ? 'Power On!' : 'Power Off!'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _controller.clear();
+      _interpreter.resetTrigger();
+    });
+  }
+
+  void _resetCanvas() {
+    _controller.clear();
+    _interpreter.resetTrigger();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CanvasComplexTemplatePage(
+      title: 'Power Symbol Page',
+      onClear: _resetCanvas,
+      canvas: PaintTypeNoProcessor(
+        backgroundColor: Colors.grey,
+        controller: _controller,
+      ),
+    );
+  }
+}

@@ -2,14 +2,14 @@ import 'package:shorthand_app/common/model/point.dart';
 
 class MinimumDistanceFilter {
   // preprocess for canvas
-  bool isBiggerThanMinimumDistance(Point curr, Point last, double minDistance) {
+  static bool isBiggerThanMinimumDistance(Point curr, Point last, double minDistance) {
     final dx = (curr.x - last.x).abs();
     final dy = (curr.y - last.y).abs();
     return dx >= minDistance || dy >= minDistance;
   }
 
   // postprocess for processor
-  List<Point> reducePoints(List<Point> points, double minDistance) {
+  static List<Point> reducePoints(List<Point> points, double minDistance) {
     if (points.isEmpty) return [];
 
     final reduced = <Point>[points.first];

@@ -2,7 +2,7 @@ import 'package:shorthand_app/common/model/point.dart';
 
 class LineIntersectionUtil {
   // Check if two lines intersect
-  bool linesIntersect(List<Point> line1, List<Point> line2) {
+  static bool linesIntersect(List<Point> line1, List<Point> line2) {
     final p1 = line1[0];
     final p2 = line1[line1.length - 1];
     final p3 = line2[0];
@@ -27,13 +27,13 @@ class LineIntersectionUtil {
   }
 
   // Calculate the direction of the point relative to the line
-  double direction(Point a, Point b, Point c) {
+  static double direction(Point a, Point b, Point c) {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
   }
 
   // Check if point c lies on segment ab
-  bool onSegment(Point a, Point b, Point c) {
+  static bool onSegment(Point a, Point b, Point c) {
     return (c.x >= a.x && c.x <= b.x || c.x >= b.x && c.x <= a.x) &&
-           (c.y >= a.y && c.y <= b.y || c.y >= b.y && c.y <= a.y);
+        (c.y >= a.y && c.y <= b.y || c.y >= b.y && c.y <= a.y);
   }
 }

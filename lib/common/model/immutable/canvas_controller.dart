@@ -11,6 +11,14 @@ abstract class LinesInterpreter<T> {
   T process(List<Line> lines);
 }
 
+abstract class TextLinesInterpreter {
+  String process(List<Line> lines);
+}
+
+abstract class ActionLinesInterpreter {
+  void process(List<Line> lines);
+}
+
 enum Tool { pen, eraser }
 
 class CanvasController extends ChangeNotifier {
@@ -19,7 +27,8 @@ class CanvasController extends ChangeNotifier {
 
   String _outputText = '';
   bool processOnPointerUp = false;
-  LinesInterpreter<String>? _interpreter;
+  TextLinesInterpreter? _textInterpreter;
+  ActionLinesInterpreter? _actionInterpreter;
 
   final List<CanvasModel> _undoStack = [];
   final List<CanvasModel> _redoStack = [];
@@ -29,11 +38,13 @@ class CanvasController extends ChangeNotifier {
   String get outputText => _outputText;
 
   CanvasController({
-    LinesInterpreter<String>? interpreter,
+    TextLinesInterpreter? textInterpreter,
+    ActionLinesInterpreter? actionInterpreter,
     this.processOnPointerUp = false,
     CanvasModel? initialModel,
     Tool initialTool = Tool.pen,
-  }) : _interpreter = interpreter,
+  }) : _textInterpreter = textInterpreter,
+       _actionInterpreter = actionInterpreter,
        _model = initialModel ?? CanvasModel.empty(),
        _tool = initialTool,
        _outputText = '';
@@ -46,32 +57,61 @@ class CanvasController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setInterpreter(LinesInterpreter<String>? interpreter) {
-    _interpreter = interpreter;
+  void setTextInterpreter(TextLinesInterpreter? interpreter) {
+    _textInterpreter = interpreter;
     if (!processOnPointerUp) _updateOutput();
+    notifyListeners();
+  }
+
+  void setActionInterpreter(ActionLinesInterpreter? interpreter) {
+    _actionInterpreter = interpreter;
   }
 
   // void _updateOutput() {
   //   if (_interpreter == null) return;
   //   _outputText = _interpreter!.process(_model.lines);
+  // // }
+  // void _updateOutput() {
+  //   if (_interpreter == null) return;
+  //   _outputText = _interpreter!.process(_model.lines);
+  //   notifyListeners(); // <-- ensure this
+  // }
+  // void _updateOutput() {
+  //   if (_textInterpreter != null) {
+  //     _outputText = _textInterpreter!.process(_model.lines);
+  //   }
+  //   _actionInterpreter?.process(_model.lines);
+  //   notifyListeners(); // <-- ensure this
   // }
   void _updateOutput() {
-    if (_interpreter == null) return;
-    _outputText = _interpreter!.process(_model.lines);
-    notifyListeners(); // <-- ensure this
+    if (_textInterpreter != null) {
+      _outputText = _textInterpreter!.process(_model.lines);
+      notifyListeners();
+    }
   }
 
+  // void endLine() {
+  //   // Always commit the final line for undo
+  //   if (_tool == Tool.pen && _model.lines.isNotEmpty) {
+  //     _commit(_model);
+  //   }
+
+  //   if (processOnPointerUp) {
+  //     _updateOutput();
+  //     notifyListeners();
+  //   }
+  // }
   void endLine() {
-    // Always commit the final line for undo
     if (_tool == Tool.pen && _model.lines.isNotEmpty) {
       _commit(_model);
     }
 
     if (processOnPointerUp) {
-      _updateOutput();
-      notifyListeners();
+      _updateOutput(); // text
+      _actionInterpreter?.process(_model.lines); // ✅ action here only
     }
   }
+
   // void endLine() {
   //   if (processOnPointerUp) {
   //     _updateOutput(); // process after pointer up

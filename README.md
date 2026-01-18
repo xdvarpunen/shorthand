@@ -9,9 +9,9 @@ There is not that many alphabets in the world really...
 There is __ from each continent at least one script recognized from time until medieval:
 - America: Morse
 - Europe: Ogham
-- Africa:
-- Asia: 
-- Australia: 
+- Africa: 
+- Asia: Hangul
+- Australia: they have symbolic lines which meaning depends on situation
 - Polynesia: they don't have
 
 ---

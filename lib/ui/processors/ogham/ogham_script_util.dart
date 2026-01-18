@@ -21,6 +21,6 @@ class OghamScriptUtil {
   }
 
   bool lineIntersectWithStem(List<Point> line, List<Point> stem) {
-    return LineIntersectionUtil().linesIntersect(line, stem);
+    return LineIntersectionUtil.linesIntersect(line, stem);
   }
 }
