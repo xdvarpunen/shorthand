@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shorthand_app/ui/pages/about_page.dart';
+import 'package:shorthand_app/ui/pages/cuneiform_page.dart';
 import 'package:shorthand_app/ui/pages/just_paint_page.dart';
 import 'package:shorthand_app/ui/pages/morse_page.dart';
 import 'package:shorthand_app/ui/pages/power_symbol_page.dart';
@@ -68,6 +69,11 @@ class HomePage extends StatelessWidget {
                           title: 'Power Symbol Page',
                           description: 'Power Symbol Page',
                           builder: (_) => PowerSymbolPage(),
+                        ),
+                        PageItem(
+                          title: 'Cuneiform Page',
+                          description: 'Cuneiform Page',
+                          builder: (_) => CuneiformPage(),
                         ),
                       ],
                     ),
