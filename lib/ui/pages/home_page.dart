@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:shorthand_app/ui/pages/about_page.dart';
-import 'package:shorthand_app/ui/pages/cuneiform_page.dart';
-import 'package:shorthand_app/ui/pages/frends_logo_page.dart';
-import 'package:shorthand_app/ui/pages/just_paint_page.dart';
-import 'package:shorthand_app/ui/pages/morse_page.dart';
-import 'package:shorthand_app/ui/pages/power_symbol_page.dart';
-import 'package:shorthand_app/ui/pages/tomtom_code_page.dart';
-import 'package:shorthand_app/ui/processors/ogham/ogham_multi_letter.dart';
-// import 'package:shorthand_app/ui/pages/morse_page.dart';
-// import 'package:shorthand_app/ui/pages/ogham_script_multi_letter_page.dart';
-// import 'package:shorthand_app/ui/pages/ogham_script_page.dart';
-// import 'package:shorthand_app/ui/pages/tomtom_code_page.dart';
+import 'package:shorthand_app/ui/pages/about/about_page.dart';
+import 'package:shorthand_app/ui/pages/benchmark/benchmark_page.dart';
+import 'package:shorthand_app/ui/pages/cuneiform/cuneiform_page.dart';
+import 'package:shorthand_app/ui/pages/frends_logo/frends_logo_page.dart';
+import 'package:shorthand_app/ui/pages/just_paint/just_paint_page.dart';
+import 'package:shorthand_app/ui/pages/morse/morse_page.dart';
+import 'package:shorthand_app/ui/pages/pigpen_cipher/pigpen_cipher_page.dart';
+import 'package:shorthand_app/ui/pages/pigpen_cipher/pigpen_cipher_page2.dart';
+import 'package:shorthand_app/ui/pages/power_symbol/power_symbol_page.dart';
+import 'package:shorthand_app/ui/pages/tomtom_code/tomtom_code_page.dart';
+import 'package:shorthand_app/ui/pages/ogham/ogham_multi_letter.dart';
 import 'package:shorthand_app/ui/templates/page_list_page.dart';
-import 'package:shorthand_app/ui/widgets/ogham_script_painter.dart';
-// import 'package:shorthand_app/ui/pages/power_symbol_page.dart';
+import 'package:shorthand_app/ui/pages/ogham/ogham_script_painter.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -40,24 +38,14 @@ class HomePage extends StatelessWidget {
                           description: 'Just Paint Page',
                           builder: (_) => JustPaintPage(),
                         ),
-                        // PageItem(
-                        //   title: 'Ogham Script Page',
-                        //   description: 'Ogham Script Page',
-                        //   builder: (_) => OghamScriptPage(),
-                        // ),
-                        // PageItem(
-                        //   title: 'Ogham Script 2 Page',
-                        //   description: 'Ogham Script 2 Page',
-                        //   builder: (_) => OghamScriptMultiLetterPage(),
-                        // ),
                         PageItem(
                           title: 'Morse Page',
                           description: 'Morse Page',
                           builder: (_) => MorsePage(),
                         ),
                         PageItem(
-                          title: 'Morse2 Page',
-                          description: 'Morse 2Page',
+                          title: 'Ogham Script Page',
+                          description: 'Ogham Script Page',
                           builder: (_) => OghamPage(
                             textInterpreter: OghamMultiLetterProcessor(100, 16),
                           ),
@@ -81,6 +69,21 @@ class HomePage extends StatelessWidget {
                           title: 'Frends Logo Page',
                           description: 'Frends Logo Page',
                           builder: (_) => FrendsLogoPage(),
+                        ),
+                        PageItem(
+                          title: 'Pigpen Cipher Page',
+                          description: 'Pigpen Cipher Page',
+                          builder: (_) => PigpenCipherPage(),
+                        ),
+                        PageItem(
+                          title: 'Pigpen Cipher Page 2',
+                          description: 'Pigpen Cipher Page 2',
+                          builder: (_) => PigpenCipherPage2(),
+                        ),
+                        PageItem(
+                          title: 'Benchmark Page',
+                          description: 'Benchmark Page',
+                          builder: (_) => BenchmarkPage(),
                         ),
                       ],
                     ),

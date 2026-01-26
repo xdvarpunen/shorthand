@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shorthand_app/common/model/immutable/canvas_controller.dart';
+import 'package:shorthand_app/toolbox/model/immutable/canvas_controller.dart';
 
 class PaintTypeNoProcessor extends StatelessWidget {
   final Color backgroundColor;
