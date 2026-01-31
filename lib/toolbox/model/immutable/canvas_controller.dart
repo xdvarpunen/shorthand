@@ -260,7 +260,7 @@ class CanvasView extends StatelessWidget {
 
 class CanvasGestureLayer extends StatelessWidget {
   final CanvasController controller;
-
+ 
   const CanvasGestureLayer({super.key, required this.controller});
 
   @override
