@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shorthand_app/toolbox/core/bounding_box_grouper.dart';
 import 'package:shorthand_app/toolbox/model/immutable/canvas_controller.dart';
 import 'package:shorthand_app/toolbox/model/line.dart';
 import 'package:shorthand_app/toolbox/toolbox/inspectors/line_inspector.dart';

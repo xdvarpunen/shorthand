@@ -1,51 +1,45 @@
-import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:shorthand_app/toolbox/model/immutable/canvas_controller.dart';
+import 'package:shorthand_app/ui/templates/canvas_complex_template_page.dart';
+import 'package:shorthand_app/ui/widgets/paint_type_no_processor.dart';
 
-import 'package:shorthand_app/ui/pages/calligraphy/angle.dart';
-import 'package:shorthand_app/ui/pages/calligraphy/vec2.dart';
+class CalligraphyPage extends StatefulWidget {
+  const CalligraphyPage({super.key});
 
-class StrokeSegment {
-  Vec2 start;
-  Vec2 end;
-  double nibAngleDeg; // degrees, relative to canvas
-  double nibWidth;
-
-  StrokeSegment(this.start, this.end, this.nibAngleDeg, this.nibWidth);
-
-  /// Returns the 4 corners of the nib polygon
-  List<Vec2> getCorners() {
-    double halfWidth = nibWidth / 2.0;
-
-    // Convert nib angle to radians
-    double angleRad = Angle.degToRad(nibAngleDeg);
-
-    // Perpendicular vector based on fixed nib angle
-    Vec2 offset = Vec2(
-      cos(angleRad + pi / 2) * halfWidth,
-      sin(angleRad + pi / 2) * halfWidth,
-    );
-
-    // 4 corners
-    Vec2 p1 = start + offset;
-    Vec2 p2 = start - offset;
-    Vec2 p3 = end - offset;
-    Vec2 p4 = end + offset;
-
-    return [p1, p2, p3, p4];
-  }
-
-  // void debug() {
-  //   List<Vec2> corners = getCorners();
-  //   for (var i = 0; i < corners.length; i++) {
-  //     print('Corner $i: (${corners[i].x}, ${corners[i].y})');
-  //   }
-  // }
+  @override
+  State<CalligraphyPage> createState() => _CalligraphyPageState();
 }
 
-// need factory from point to StrokeSegment
-//
-// Vec2 start = Vec2(0, 0);
-// Vec2 end = Vec2(50, 30);
-// double nibAngle = pi / 6; // 30 degrees
-// double nibWidth = 10;
-//
-// StrokeSegment segment = StrokeSegment(start, end, nibAngle, nibWidth);
+class _CalligraphyPageState extends State<CalligraphyPage> {
+  late final CanvasController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = CanvasController(useCalligraphyPen: true);
+    _controller.addListener(() {
+      setState(() {}); // rebuild to update switch and other UI
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CanvasComplexTemplatePage(
+      title: 'Calligraphy Page',
+      controller: _controller,
+      onClear: _controller.clear,
+      onUndo: _controller.undo,
+      onRedo: _controller.redo,
+      canvas: PaintTypeNoProcessor(
+        backgroundColor: Colors.grey,
+        controller: _controller,
+      ),
+    );
+  }
+}

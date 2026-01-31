@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:shorthand_app/toolbox/model/immutable/canvas_model.dart';
+import 'package:shorthand_app/toolbox/model/immutable/canvas_painter.dart';
 import 'package:shorthand_app/toolbox/model/line.dart';
 import 'package:shorthand_app/toolbox/model/point.dart';
 
@@ -27,6 +28,9 @@ class CanvasController extends ChangeNotifier {
 
   String _outputText = '';
   bool processOnPointerUp = false;
+  bool useCalligraphyPen = false;
+  double calligraphyPenNibAngleDeg = 45;
+  double calligraphyPenNibWidth = 20;
   TextLinesInterpreter? _textInterpreter;
   ActionLinesInterpreter? _actionInterpreter;
 
@@ -41,6 +45,7 @@ class CanvasController extends ChangeNotifier {
     TextLinesInterpreter? textInterpreter,
     ActionLinesInterpreter? actionInterpreter,
     this.processOnPointerUp = false,
+    this.useCalligraphyPen = false,
     CanvasModel? initialModel,
     Tool initialTool = Tool.pen,
   }) : _textInterpreter = textInterpreter,
@@ -241,6 +246,9 @@ class CanvasView extends StatelessWidget {
             painter: CanvasPainter(
               state: controller.state,
               showSinglePointCircle: true,
+              useCalligraphyPen: controller.useCalligraphyPen,
+              calligraphyPenNibAngleDeg: controller.calligraphyPenNibAngleDeg,
+              calligraphyPenNibWidth: controller.calligraphyPenNibWidth,
             ),
             size: MediaQuery.of(context).size,
           ),
@@ -302,53 +310,4 @@ class CanvasState {
       );
   factory CanvasState.empty({Tool tool = Tool.pen}) =>
       CanvasState(model: CanvasModel.empty(), tool: tool);
-}
-
-class CanvasPainter extends CustomPainter {
-  final CanvasState state;
-  final bool showSinglePointCircle;
-
-  CanvasPainter({required this.state, required this.showSinglePointCircle});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5.0;
-
-    for (final line in state.model.lines) {
-      final points = line.points;
-
-      if (points.length == 1 && showSinglePointCircle) {
-        final p = points.first;
-        canvas.drawCircle(Offset(p.x, p.y), paint.strokeWidth / 2, paint);
-        continue;
-      }
-
-      for (int i = 0; i < points.length - 1; i++) {
-        final p1 = points[i];
-        final p2 = points[i + 1];
-        canvas.drawLine(Offset(p1.x, p1.y), Offset(p2.x, p2.y), paint);
-      }
-    }
-
-    if (state.outputText.isNotEmpty) {
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: state.outputText,
-          style: const TextStyle(fontSize: 20, color: Colors.black),
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout();
-
-      textPainter.paint(canvas, Offset(20, 20));
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CanvasPainter old) {
-    return old.state != state ||
-        old.showSinglePointCircle != showSinglePointCircle;
-  }
 }

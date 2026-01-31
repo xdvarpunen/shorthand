@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shorthand_app/ui/pages/about/about_page.dart';
 import 'package:shorthand_app/ui/pages/attic_numerals/attic_numerals_page.dart';
 import 'package:shorthand_app/ui/pages/benchmark/benchmark_page.dart';
+import 'package:shorthand_app/ui/pages/calligraphy/calligraphy_page.dart';
 import 'package:shorthand_app/ui/pages/cuneiform/cuneiform_page.dart';
 import 'package:shorthand_app/ui/pages/etruscan_numerals/etruscan_numerals_page.dart';
 import 'package:shorthand_app/ui/pages/frends_logo/frends_logo_page.dart';
@@ -102,6 +103,11 @@ class HomePage extends StatelessWidget {
                           title: 'Attic Numerals Page',
                           description: 'Attic Numerals Page',
                           builder: (_) => AtticNumeralsPage(),
+                        ),
+                        PageItem(
+                          title: 'Calligraphy Page',
+                          description: 'Calligraphy Page',
+                          builder: (_) => CalligraphyPage(),
                         ),
                       ],
                     ),
