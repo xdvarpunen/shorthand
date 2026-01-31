@@ -1,6 +1,6 @@
 import 'package:shorthand_app/toolbox/model/immutable/canvas_controller.dart';
 import 'package:shorthand_app/toolbox/model/line.dart';
-import 'package:shorthand_app/toolbox/toolbox/toolbox.dart';
+import 'package:shorthand_app/toolbox/toolbox/inspectors/line_inspector.dart';
 import 'package:shorthand_app/ui/pages/tomtom_code/tomtom_code_decoder.dart';
 
 class TomtomCodeLinesInterpreter implements TextLinesInterpreter {
@@ -9,11 +9,11 @@ class TomtomCodeLinesInterpreter implements TextLinesInterpreter {
   TomtomCodeLinesInterpreter({TomtomCodeDecoder? decoder})
     : _decoder = decoder ?? TomtomCodeDecoder();
   bool isHorizontal(Line line) {
-    return Toolbox().inspectors.lineInspector.checkHorizontalLine(line.points);
+    return LineInspector.checkHorizontalLine(line.points);
   }
 
   bool isVertical(Line line) {
-    return Toolbox().inspectors.lineInspector.checkVerticalLine(line.points);
+    return LineInspector.checkVerticalLine(line.points);
   }
 
   bool isDescending(Line line) {

@@ -1,3 +1,4 @@
+import 'package:shorthand_app/toolbox/model/line.dart';
 import 'package:shorthand_app/toolbox/model/point.dart';
 
 class BoundingBoxGrouper {
@@ -43,10 +44,7 @@ class BoundingBoxGrouper {
     return groups;
   }
 
-  static bool _intersectsByBoundingBox(
-    List<Point> a,
-    List<Point> b,
-  ) {
+  static bool _intersectsByBoundingBox(List<Point> a, List<Point> b) {
     final ab = _getBounds(a);
     final bb = _getBounds(b);
 
@@ -56,21 +54,52 @@ class BoundingBoxGrouper {
     return overlapX && overlapY;
   }
 
-  static _Bounds _getBounds(List<Point> stroke) {
+  static Bounds _getBounds(List<Point> stroke) {
     final minX = stroke.map((p) => p.x).reduce((v, e) => v < e ? v : e);
     final maxX = stroke.map((p) => p.x).reduce((v, e) => v > e ? v : e);
     final minY = stroke.map((p) => p.y).reduce((v, e) => v < e ? v : e);
     final maxY = stroke.map((p) => p.y).reduce((v, e) => v > e ? v : e);
 
-    return _Bounds(minX, minY, maxX, maxY);
+    return Bounds(minX, minY, maxX, maxY);
+  }
+
+  static Bounds boundsFromLines(List<Line> lines) {
+    if (lines.isEmpty) {
+      throw ArgumentError('lines must not be empty');
+    }
+
+    double minX = double.infinity;
+    double minY = double.infinity;
+    double maxX = -double.infinity;
+    double maxY = -double.infinity;
+
+    for (final line in lines) {
+      for (final p in line.points) {
+        if (p.x < minX) minX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y > maxY) maxY = p.y;
+      }
+    }
+
+    return Bounds(minX, minY, maxX, maxY);
   }
 }
 
-class _Bounds {
+class Bounds {
   final double minX;
   final double minY;
   final double maxX;
   final double maxY;
 
-  _Bounds(this.minX, this.minY, this.maxX, this.maxY);
+  Bounds(this.minX, this.minY, this.maxX, this.maxY);
+
+  /// Returns the center point of the bounds
+  Point get center => Point((minX + maxX) / 2, (minY + maxY) / 2);
+
+  /// Optional: width of bounds
+  double get width => maxX - minX;
+
+  /// Optional: height of bounds
+  double get height => maxY - minY;
 }

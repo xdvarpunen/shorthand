@@ -1,10 +1,14 @@
+
+import 'package:shorthand_app/toolbox/core/group_intersecting_lines.dart';
+import 'package:shorthand_app/toolbox/model/line.dart';
 import 'package:shorthand_app/toolbox/model/point.dart';
+import 'package:shorthand_app/toolbox/toolbox/inspectors/line_length.dart';
 
 enum LineOrientation { horizontal, vertical, undefined }
 
 class LineInspector {
   // Check if the line is vertical
-  bool checkVerticalLine(List<Point> line) {
+  static bool checkVerticalLine(List<Point> line) {
     if (line.isEmpty) {
       throw ArgumentError("Line should not be null or empty");
     }
@@ -18,8 +22,10 @@ class LineInspector {
     return width < height;
   }
 
+  static bool isVerticalLine(Line line) => checkVerticalLine(line.points);
+
   // Check if the line is horizontal
-  bool checkHorizontalLine(List<Point> line) {
+  static bool checkHorizontalLine(List<Point> line) {
     if (line.isEmpty) {
       throw ArgumentError("Line should not be null or empty");
     }
@@ -32,15 +38,34 @@ class LineInspector {
     final height = (endPoint.y - startPoint.y).abs();
     return width > height;
   }
+  static bool isHorizontalLine(Line line) => checkHorizontalLine(line.points);
 
   // Check if the line is descending (y decreases as x increases)
-  bool isDescending(List<Point> line) {
+  @Deprecated('Use isDescendingPoints or isDescendingLine instead')
+  static bool isDescending(List<Point> line) {
     return line[0].y < line[line.length - 1].y;
   }
 
+  static bool isDescendingPoints(List<Point> line) {
+    return line[0].y < line[line.length - 1].y;
+  }
+
+  static bool isDescendingLine(Line line) {
+    return line.points[0].y < line.points[line.points.length - 1].y;
+  }
+
   // Check if the line is ascending (y increases as x increases)
-  bool isAscending(List<Point> line) {
+  @Deprecated('Use isAscendingPoints or isAscendingLine instead')
+  static bool isAscending(List<Point> line) {
     return line[0].y > line[line.length - 1].y;
+  }
+
+  static bool isAscendingPoints(List<Point> line) {
+    return line[0].y > line[line.length - 1].y;
+  }
+
+  static bool isAscendingLine(Line line) {
+    return line.points[0].y > line.points[line.points.length - 1].y;
   }
 
   static double width(List<Point>? stroke) {
@@ -113,6 +138,23 @@ class LineInspector {
     // Larger X means "right"
     return end.x > start.x;
   }
+
+  static bool pointsIntersect(List<Point> line1, List<Point> line2) {
+    return IntersectingLineGrouper().linesIntersect(line1, line2);
+  }
+
+  static bool linesIntersect(Line line1, Line line2) {
+    return IntersectingLineGrouper().linesIntersect(line1.points, line2.points);
+  }
+
+  static double pointsLength(List<Point> line) {
+    return LineLength.lineLength(Line(line));
+  }
+
+  static double lineLength(Line line) {
+    return LineLength.lineLength(line);
+  }
 }
+
 
 // TODO isUp, isDown, isLeft, isRight, isUpAndRight isUpAndLeft...

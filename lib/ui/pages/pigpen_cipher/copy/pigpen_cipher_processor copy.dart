@@ -4,8 +4,8 @@ import 'package:shorthand_app/toolbox/core/stroke_util.dart';
 import 'package:shorthand_app/toolbox/model/immutable/canvas_controller.dart';
 import 'package:shorthand_app/toolbox/model/line.dart';
 import 'package:shorthand_app/toolbox/model/point.dart';
+import 'package:shorthand_app/toolbox/toolbox/inspectors/line_inspector.dart';
 import 'package:shorthand_app/toolbox/toolbox/inspectors/lines/group_intersecting_lines.dart';
-import 'package:shorthand_app/toolbox/toolbox/toolbox.dart';
 import 'package:shorthand_app/ui/pages/pigpen_cipher/copy/bounding_box.dart';
 
 // https://en.wikipedia.org/wiki/Pigpen_cipher
@@ -393,7 +393,7 @@ class Rectangle {
   static int getHorizontalLinesCount(List<Line> lines) {
     return lines
         .where(
-          (line) => Toolbox().inspectors.lineInspector.checkHorizontalLine(
+          (line) => LineInspector.checkHorizontalLine(
             line.points,
           ),
         )
@@ -405,7 +405,7 @@ class Rectangle {
     return lines
         .where(
           (line) =>
-              Toolbox().inspectors.lineInspector.checkVerticalLine(line.points),
+              LineInspector.checkVerticalLine(line.points),
         )
         .toList()
         .length;
@@ -414,7 +414,7 @@ class Rectangle {
   static List<Line> getHorizontalLines(List<Line> lines) {
     return lines
         .where(
-          (line) => Toolbox().inspectors.lineInspector.checkHorizontalLine(
+          (line) => LineInspector.checkHorizontalLine(
             line.points,
           ),
         )
@@ -425,7 +425,7 @@ class Rectangle {
     return lines
         .where(
           (line) =>
-              Toolbox().inspectors.lineInspector.checkVerticalLine(line.points),
+              LineInspector.checkVerticalLine(line.points),
         )
         .toList();
   }

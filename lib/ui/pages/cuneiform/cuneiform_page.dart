@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shorthand_app/toolbox/model/immutable/canvas_controller.dart';
 import 'package:shorthand_app/toolbox/model/line.dart';
+import 'package:shorthand_app/toolbox/toolbox/inspectors/line_inspector.dart';
 import 'package:shorthand_app/toolbox/toolbox/inspectors/lines_intersection_check.dart';
-import 'package:shorthand_app/toolbox/toolbox/toolbox.dart';
 import 'package:shorthand_app/ui/templates/canvas_complex_template_page.dart';
 import 'package:shorthand_app/ui/widgets/paint_type_no_processor.dart';
 
@@ -73,11 +73,11 @@ class _CuneiformPageState extends State<CuneiformPage> {
 // }
 class CuneiformLinesInterpreter extends TextLinesInterpreter {
   bool isHorizontal(Line line) {
-    return Toolbox().inspectors.lineInspector.checkHorizontalLine(line.points);
+    return LineInspector.checkHorizontalLine(line.points);
   }
 
   bool isVertical(Line line) {
-    return Toolbox().inspectors.lineInspector.checkVerticalLine(line.points);
+    return LineInspector.checkVerticalLine(line.points);
   }
 
   bool isEz(List<Line> lines) {

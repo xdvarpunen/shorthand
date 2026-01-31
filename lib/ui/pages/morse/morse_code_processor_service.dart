@@ -1,6 +1,6 @@
 import 'package:shorthand_app/toolbox/model/immutable/canvas_controller.dart';
 import 'package:shorthand_app/toolbox/model/line.dart';
-import 'package:shorthand_app/toolbox/toolbox/toolbox.dart';
+import 'package:shorthand_app/toolbox/toolbox/inspectors/line_inspector.dart';
 import 'package:shorthand_app/ui/pages/morse/morse_code_decoder.dart';
 
 class MorseLinesInterpreter implements TextLinesInterpreter {
@@ -14,11 +14,11 @@ class MorseLinesInterpreter implements TextLinesInterpreter {
   }
 
   bool isHorizontal(Line line) {
-    return Toolbox().inspectors.lineInspector.checkHorizontalLine(line.points);
+    return LineInspector.checkHorizontalLine(line.points);
   }
 
   bool isVertical(Line line) {
-    return Toolbox().inspectors.lineInspector.checkVerticalLine(line.points);
+    return LineInspector.checkVerticalLine(line.points);
   }
 
   LineType _classify(Line line) {
